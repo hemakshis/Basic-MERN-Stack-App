@@ -1,0 +1,27 @@
+{
+    "name": "basic-mern-app",
+    "version": "1.0.0",
+    "description": "A Basic MERN Stack App just for practice",
+    "main": "app.js",
+    "scripts": {
+        "start": "node app.js",
+        "client-server": "npm start --prefix client",
+        "client": "cd client && npm start",
+        "server": "nodemon app.js",
+        "dev": "concurrently \"npm run server\" \"npm run client\""
+    },
+    "author": "Hemakshi Sachdev",
+    "license": "ISC",
+    "dependencies": {
+        "babel-preset-es2015-node6": "^0.4.0",
+        "body-parser": "^1.18.2",
+        "concurrently": "^3.5.1",
+        "express": "^4.16.3",
+        "mongoose": "^5.0.12",
+        "morgan": "^1.9.0",
+        "source-map-support": "^0.5.4"
+    },
+    "devDependencies": {
+        "nodemon": "^1.17.3"
+    }
+}

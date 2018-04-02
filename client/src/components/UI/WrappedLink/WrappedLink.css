@@ -1,0 +1,11 @@
+.WrappedLink {
+    display: block;
+    height: 100%;
+    color: white;
+    text-decoration: none;
+}
+
+.WrappedLink:hover {
+    color: white;
+    text-decoration: none;
+}
