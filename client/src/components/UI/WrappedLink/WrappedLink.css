@@ -1,3 +1,8 @@
+.WrappedButton {
+    margin-top: -7px;
+    float: right;
+}
+
 .WrappedLink {
     display: block;
     height: 100%;

@@ -23,13 +23,19 @@ app.use(function(req,res,next){
      next();
 })
 
-app.get('/api/articles', (req, res) => {
+app.get('/', (req, res) => {
     Article.find({}, (err, data) => {
-        console.log(data);
-        // res.send('Hey it\'s me');
         res.json(data);
     })
 });
+
+app.get('/articles/:id', (req, res) => {
+    console.log('got the request');
+    Article.findById(id, (err, data) => {
+        console.log('article requested', data);
+        res.json(data);
+    })
+})
 
 app.listen(5000, () => {
     console.log('Server started on port 5000');

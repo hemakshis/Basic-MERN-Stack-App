@@ -4,8 +4,12 @@ import './WrappedLink.css'
 
 const wrappedLink = (props) => {
     return (
-        <button className={props.buttonClasses.join(' ')} style={{float: 'right'}}>
-            <Link to={props.to} className="WrappedLink">{props.children}</Link>
+        <button
+            className={[...props.buttonClasses, "WrappedButton"].join(' ')}
+            onClick={props.click}>
+            <Link
+                to={props.to}
+                className="WrappedLink">{props.children}</Link>
         </button>
     );
 }

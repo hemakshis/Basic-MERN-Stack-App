@@ -7,7 +7,7 @@
         "start": "node app.js",
         "client-server": "npm start --prefix client",
         "client": "cd client && npm start",
-        "server": "nodemon app.js",
+        "server": "node app.js",
         "dev": "concurrently \"npm run server\" \"npm run client\""
     },
     "author": "Hemakshi Sachdev",

@@ -2,26 +2,26 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getAllArticles } from '../../store/actions/articles.js';
 import Articles from '../Articles/Articles';
-import WrappedLink from '../../components/UI/WrappedLink/WrappedLink';
+import { Route } from 'react-router-dom';
+// import WrappedLink from '../../components/UI/WrappedLink/WrappedLink';
 
-class MainPage extends Component {
+class Home extends Component {
 
     componentWillMount() {
         this.props.initArticles();
     }
 
     render() {
+        console.log('[In HOME]', this.props);
         return (
             <div className="container">
-                <br />
+                {/* <br />
                 <div>
                     <h1 style={{display: 'inline-block'}}>All Articles</h1>
                     <WrappedLink to="/articles/add" buttonClasses={['btn', 'btn-primary']}>Add Article</WrappedLink>
-                </div>
+                </div> */}
                 <br />
-                <div className="jumbotron">
-                    <Articles articles={this.props.articles} />
-                </div>
+                <Articles articles={this.props.articles} />
             </div>
         );
     }
@@ -39,4 +39,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MainPage);
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
