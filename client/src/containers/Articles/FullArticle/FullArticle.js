@@ -2,38 +2,46 @@ import React, { Component } from 'react';
 
 class FullArticle extends Component {
 
-    // state = {
-    //     article: null
-    // };
-    //
-    // componentDidMount() {
-    //     console.log(this.state.article);
-    //     console.log(this.props);
-    //     this.getArticle();
-    // }
-    //
-    // componentDidUpdate() {
-    //     console.log('from componentDidUpdate', this.state.article);
-    //     this.getArticle();
-    // }
-    //
-    // getArticle() {
-    //     console.log(this.props.match.param.id);
-    //     fetch('http://localhost:5000/articles/' + this.props.match.param.id)
-    //         .then(res => res.json())
-    //         .then(data => {
-    //             console.log(data);
-    //             this.setState({
-    //                 article: data
-    //             })
-    //         });
-    // }
+    state = {
+        article: null
+    };
+
+    componentDidMount() {
+        this.getArticle();
+    }
+
+    componentDidUpdate() {
+        this.getArticle();
+    }
+
+    getArticle() {
+        if (this.props.match.params.id) {
+            if (!this.state.article || (this.props.match.params.id !== this.state.article._id)) {
+                fetch('http://localhost:5000/articles/' + this.props.match.params.id)
+                    .then(res => res.json())
+                    .then(data => {
+                        this.setState({
+                            article: data
+                        });
+                    })
+            }
+        }
+
+
+    }
 
     render() {
-        console.log('[In FULLARTICLE]', this.props);
-        return (
-            <h5>Full Article</h5>
-        );
+        let article = <p>Wait....Loading your article....</p>
+
+        if (this.state.article) {
+            article = <div className="container">
+                        <h3>Full Article: {this.state.article.title}</h3>
+                        <h4>By {this.state.article.author}</h4>
+                        <h5>{this.state.article.body}</h5>
+                    </div>;
+        }
+        
+        return article;
     }
 }
 

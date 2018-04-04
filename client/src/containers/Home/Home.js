@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getAllArticles } from '../../store/actions/articles.js';
 import Articles from '../Articles/Articles';
-import { Route } from 'react-router-dom';
-// import WrappedLink from '../../components/UI/WrappedLink/WrappedLink';
+import WrappedLink from '../../components/UI/WrappedLink/WrappedLink';
 
 class Home extends Component {
 
@@ -12,14 +11,13 @@ class Home extends Component {
     }
 
     render() {
-        console.log('[In HOME]', this.props);
         return (
             <div className="container">
-                {/* <br />
+                <br />
                 <div>
                     <h1 style={{display: 'inline-block'}}>All Articles</h1>
                     <WrappedLink to="/articles/add" buttonClasses={['btn', 'btn-primary']}>Add Article</WrappedLink>
-                </div> */}
+                </div>
                 <br />
                 <Articles articles={this.props.articles} />
             </div>

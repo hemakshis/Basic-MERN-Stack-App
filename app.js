@@ -31,9 +31,9 @@ app.get('/', (req, res) => {
 
 app.get('/articles/:id', (req, res) => {
     console.log('got the request');
-    Article.findById(id, (err, data) => {
+    Article.findById(req.params.id, (err, data) => {
         console.log('article requested', data);
-        res.json(data);
+        res.send(data);
     })
 })
 

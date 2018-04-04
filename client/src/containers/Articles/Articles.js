@@ -7,12 +7,10 @@ import './Articles.css';
 class Articles extends Component {
 
     handleArticleViewClick = (id) => {
-        console.log('handleArticleViewClick clicked');
         this.props.history.push({pathname: '/articles/' + id});
     }
 
     render() {
-        console.log('[In ARTICLES]', this.props);
         const articles = this.props.articles.map(article => (
             <Article
                 key={article._id}
@@ -29,7 +27,9 @@ class Articles extends Component {
                         {articles}
                     </div>
                 </section>
-                <Route exact path="/articles/:id" component={FullArticle} />
+                <Switch>
+                    <Route exact path="/articles/:id" component={FullArticle} />
+                </Switch>
             </div>
         );
     }
