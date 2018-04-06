@@ -1,0 +1,11 @@
+.FullArticle h3 {
+    text-transform: capitalize;
+    text-decoration: underline;
+}
+
+.FullArticle p {
+    padding: 18px;
+    background-color: white;
+    border-radius: 4px;
+    box-shadow: inset 2px 2px #ccc;
+}

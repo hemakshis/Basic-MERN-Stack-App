@@ -10,8 +10,7 @@ const ArticleSchema = mongoose.Schema({
         required: true
     },
     authorID: {
-        type: String,
-        required: true
+        type: String
     },
     body: {
         type: String,
@@ -24,4 +23,4 @@ const ArticleSchema = mongoose.Schema({
     }
 });
 
-const Poll = module.exports = mongoose.model('Article', ArticleSchema); 
+const Poll = module.exports = mongoose.model('Article', ArticleSchema);

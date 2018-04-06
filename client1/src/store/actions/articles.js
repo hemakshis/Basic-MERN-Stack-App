@@ -16,20 +16,6 @@ const singleArticleReceivedSuccessfully = (article) => {
     };
 };
 
-const newArticleSubmittedSuccessfully = () => {
-    return {
-        type: actionTypes.NEW_ARTICLE_SUBMITTED,
-        submitted: true
-    };
-};
-
-const errorSubmittingNewArticle = (err) => {
-    return {
-        type: actionTypes.ERROR_SUBMITTING_ARTICLE,
-        error: err
-    };
-};
-
 export const getAllArticles = () => {
     return dispatch => {
         return (
@@ -56,23 +42,17 @@ export const getSingleArticle = (articleId) => {
 
 export const submitNewArticle = (articleData) => {
     return dispatch => {
-        const options = {
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            method: 'post',
-            body: JSON.stringify(articleData)
-        };
         return (
-            fetch(URL + '/article/add', options)
-            .then(res => {
-                if (res.ok) {
-                    dispatch(newArticleSubmittedSuccessfully())
-                } else {
-                    let error = new Error(res.statusText);
-                    dispatch(errorSubmittingNewArticle(error))
-                }
+            fetch(URL + '/article/add', {
+                method: 'post',
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json'
+                  },
+                body: JSON.stringify(articleData)
             })
+            .then(res => res.json())
+            .then(data => {console.log(data);})
         );
     }
 };
