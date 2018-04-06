@@ -1,19 +1,17 @@
-import React, { Component } from 'react';
+import React from 'react';
 import './Article.css';
 import WrappedLink from '../UI/WrappedLink/WrappedLink';
 
-class Article extends Component {
-    render() {
-        return (
-            <li className="Article">
-                <strong>{this.props.title}</strong>
-                <WrappedLink
-                    to={'/articles/' + this.props.id}
-                    buttonClasses={['btn', 'btn-info', 'ViewButton']}
-                    click={this.props.click}>View</WrappedLink>
-            </li>
-        );
-    }
+const article = (props) => {
+    return (
+        <li className="Article">
+            <strong>{props.title}</strong>
+            <WrappedLink
+                to={'/articles/' + props.id}
+                buttonClasses={['btn', 'btn-info', 'ViewButton']}
+                click={props.click}>View</WrappedLink>
+        </li>
+    );
 }
 
-export default Article;
+export default article;

@@ -6,6 +6,7 @@ import SignUp from './containers/SignUp/SignUp';
 import Login from './containers/Login/Login';
 import FullArticle from './containers/FullArticle/FullArticle';
 import AddArticle from './containers/AddArticle/AddArticle';
+import EditArticle from './containers/EditArticle/EditArticle';
 import NavigationBar from './components/UI/NavigationBar/NavigationBar';
 
 class App extends Component {
@@ -15,6 +16,7 @@ class App extends Component {
                 <NavigationBar />
                 <Switch>
                     <Route exact path="/article/add" component={AddArticle} />
+                    <Route path="/article/edit/:id" component={EditArticle} />
                     <Route path="/articles/:id" component={FullArticle} />
                     <Route path="/login" component={Login} />
                     <Route path="/signup" component={SignUp} />

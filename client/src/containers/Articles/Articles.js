@@ -5,8 +5,8 @@ import './Articles.css';
 
 class Articles extends Component {
 
-    handleArticleViewClick = (id) => {
-        this.props.history.push({pathname: '/articles/' + id});
+    handleViewArticleClick(id) {
+        this.props.history.push({pathname: '/articles/' + id})
     }
 
     render() {
@@ -17,7 +17,7 @@ class Articles extends Component {
                 title={article.title}
                 author={article.author}
                 body={article.body}
-                click={() => this.handleArticleViewClick(article._id)} />
+                click={() => this.handleViewArticleClick(article._id)} />
         ));
         return (
             <div>

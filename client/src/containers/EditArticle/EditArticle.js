@@ -1,9 +1,9 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { submitNewArticle } from '../../store/actions/articles';
+import { saveArticle } from '../../store/actions/articles';
 
-class AddArticle extends Component {
+class EditArticle extends Component {
 
     state = {
         article: {
@@ -13,6 +13,15 @@ class AddArticle extends Component {
         }
     };
 
+    componentWillMount() {
+        this.setState({
+            article: {
+                title: this.props.article.title,
+                author: this.props.article.author,
+                body: this.props.article.body
+            }
+        })
+    }
 
     handleInputChange = (e) => {
         let article = {...this.state.article};
@@ -32,13 +41,12 @@ class AddArticle extends Component {
             author: this.state.article.author,
             body: this.state.article.body
         }
-        this.props.submitNewArticle(data);
+        this.props.saveArticle(this.props.match.params.id, data);
     }
 
     render() {
-        const redirect = this.props.submitted ? <Redirect to="/" /> : null;
+        const redirect = this.props.saved ? <Redirect to={"/articles/" + this.props.match.params.id} /> : null;
         const errors = this.props.errors ? <p>{this.props.errors}</p> : null;
-
         if (redirect)
             return redirect;
         if (errors)
@@ -54,7 +62,7 @@ class AddArticle extends Component {
                             <label>Title</label>
                             <input
                                 name="title"
-                                defaultValue=""
+                                defaultValue={this.state.article.title}
                                 onChange={this.handleInputChange}
                                 type="text"
                                 className="form-control"
@@ -63,8 +71,9 @@ class AddArticle extends Component {
                         <div className="form-group">
                             <label>Author</label>
                             <input
+                                disabled
                                 name="author"
-                                defaultValue=""
+                                defaultValue={this.state.article.author}
                                 onChange={this.handleInputChange}
                                 type="text"
                                 className="form-control"
@@ -74,13 +83,13 @@ class AddArticle extends Component {
                             <label>Body</label>
                             <textarea
                                 name="body"
-                                defaultValue=""
+                                defaultValue={this.state.article.body}
                                 onChange={this.handleInputChange}
                                 className="form-control"
                                 placeholder="Your article's contents goes here... Good luck!"
                                 style={{height: '200px'}} />
                         </div>
-                        <button className="btn btn-success">Submit</button>
+                        <button className="btn btn-success">Save</button>
                     </form>
                 </div>
             </div>
@@ -90,15 +99,16 @@ class AddArticle extends Component {
 
 const mapStateToProps = state => {
     return {
-        submitted: state.articles.newArticleSubmitted,
-        errors: state.articles.errorSubmittingNewArticle
+        article: state.articles.article,
+        saved: state.articles.savedArticle,
+        errors: state.articles.errorSavingArticle
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        submitNewArticle: (articleData) => dispatch(submitNewArticle(articleData))
+        saveArticle: (articleId, articleData) => dispatch(saveArticle(articleId, articleData))
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddArticle);
+export default connect(mapStateToProps, mapDispatchToProps)(EditArticle);

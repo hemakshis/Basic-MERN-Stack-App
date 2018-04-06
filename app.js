@@ -23,9 +23,9 @@ const Article = require('./models/articleModel.js');
 
 app.use(function(req,res,next){
      res.header("Access-Control-Allow-Origin", "*");
-     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
      if (req.method === 'OPTIONS') {
-         res.header('Access-Control-Allow-Methods','PUT', 'POST', 'PATCH', 'DELETE', 'GET');
+         res.header("Access-Control-Allow-Methods", "PUT, POST, DELETE, GET");
          return res.status(200).json({});
      }
      next();
@@ -55,6 +55,26 @@ app.post('/article/add', (req, res) => {
         else {
             res.send('success');
         }
+    });
+});
+
+app.post('/article/edit/:id', (req, res) => {
+    const updatedArticle = {
+        title: req.body.title,
+        author: req.body.author,
+        body: req.body.body
+    };
+
+    Article.findByIdAndUpdate(req.params.id, updatedArticle, (err, doc) => {
+        if (err) throw err;
+        else res.send('success');
+    });
+});
+
+app.delete('/article/delete/:id', (req, res) => {
+    console.log('[DELETING...]', req.params.id);
+    Article.remove({_id: req.params.id}, err => {
+        res.send('success');
     });
 });
 
