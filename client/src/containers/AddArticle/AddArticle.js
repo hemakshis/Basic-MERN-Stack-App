@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { submitNewArticle } from '../../store/actions/articles';
+import { submitNewArticle } from '../../store/actions/articlesActions';
 
 class AddArticle extends Component {
 
@@ -25,7 +25,7 @@ class AddArticle extends Component {
         });
     }
 
-    handleFormSubmit = (e) => {
+    handleAddArticleFormSubmit = (e) => {
         e.preventDefault();
         const data = {
             title: this.state.article.title,
@@ -49,36 +49,30 @@ class AddArticle extends Component {
                 <br />
                 <h3 className="text-center">Add Article</h3>
                 <div className="jumbotron">
-                    <form onSubmit={this.handleFormSubmit}>
+                    <form onSubmit={this.handleAddArticleFormSubmit}>
                         <div className="form-group">
                             <label>Title</label>
                             <input
-                                name="title"
-                                defaultValue=""
+                                name="title" type="text"
+                                className="form-control" placeholder="Title of your article"
                                 onChange={this.handleInputChange}
-                                type="text"
-                                className="form-control"
-                                placeholder="Title of your article" />
+                                defaultValue="" />
                         </div>
                         <div className="form-group">
                             <label>Author</label>
                             <input
-                                name="author"
-                                defaultValue=""
+                                name="author" type="text"
+                                className="form-control" placeholder="Your name"
                                 onChange={this.handleInputChange}
-                                type="text"
-                                className="form-control"
-                                placeholder="Your name" />
+                                defaultValue="" />
                         </div>
                         <div className="form-group">
                             <label>Body</label>
                             <textarea
-                                name="body"
-                                defaultValue=""
+                                name="body" style={{height: '200px'}}
+                                className="form-control" placeholder="Your article's contents goes here... Good luck!"
                                 onChange={this.handleInputChange}
-                                className="form-control"
-                                placeholder="Your article's contents goes here... Good luck!"
-                                style={{height: '200px'}} />
+                                defaultValue="" />
                         </div>
                         <button className="btn btn-success">Submit</button>
                     </form>
@@ -90,7 +84,7 @@ class AddArticle extends Component {
 
 const mapStateToProps = state => {
     return {
-        submitted: state.articles.newArticleSubmitted,
+        submitted: state.articles.submittedNewArticle,
         errors: state.articles.errorSubmittingNewArticle
     };
 };

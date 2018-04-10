@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom'
-import { getArticle, deleteArticle } from '../../store/actions/articles';
+import { getArticle, deleteArticle } from '../../store/actions/articlesActions';
 import WrappedLink from '../../components/UI/WrappedLink/WrappedLink';
 import './FullArticle.css'
 
@@ -23,31 +23,36 @@ class FullArticle extends Component {
         this.props.history.replace({pathname: '/article/edit/' + this.props.match.params.id});
     }
 
-    render() {
-        let article = <h2 className="text-center">Wait....Loading your article....</h2>
-        if (this.props.deleted) {
-            article = <Redirect to="/" />
-        }
-        else if (this.props.article) {
-            article = <div className="container">
-                        <br />
-                        <div className="jumbotron FullArticle">
-                            <h3 className="text-center">{this.props.article.title}</h3>
-                            <h5 className="text-right">- By {this.props.article.author}</h5>
-                            <p>{this.props.article.body}</p>
-                            <button
-                                className="btn btn-danger"
-                                style={{float: 'right'}}
-                                onClick={() => this.props.deleteArticle(this.props.match.params.id)}>Delete</button>
-                            <WrappedLink
-                                to={"/article/edit/" + this.props.match.params.id}
-                                buttonClasses={['btn', 'btn-info', 'mr-2']}
-                                click={() => this.handleEditArticleClick()}>Edit</WrappedLink>
-                        </div>
-                    </div>;
-        }
+    handleDeleteArticleClick() {
+        alert('We are deleting your article...');
+        this.props.deleteArticle(this.props.match.params.id)
+    }
 
-        return article;
+    render() {
+        if (this.props.deleted) {
+            return <Redirect to="/" />;
+        } else if (!this.props.article) {
+            return <h2 className="text-center">Wait....Loading your article....</h2>;
+        } else if (this.props.article) {
+            return (
+                <div className="container">
+                    <br />
+                    <div className="jumbotron FullArticle">
+                        <h3 className="text-center">{this.props.article.title}</h3>
+                        <h5 className="text-right">- By {this.props.article.author}</h5>
+                        <p>{this.props.article.body}</p>
+                        <button
+                            className="btn btn-danger"
+                            style={{float: 'right'}}
+                            onClick={() => this.handleDeleteArticleClick()}>Delete</button>
+                        <WrappedLink
+                            to={"/article/edit/" + this.props.match.params.id}
+                            buttonClasses={['btn', 'btn-info', 'mr-2']}
+                            click={() => this.handleEditArticleClick()}>Edit</WrappedLink>
+                    </div>
+                </div>
+            );
+        }
     }
 }
 

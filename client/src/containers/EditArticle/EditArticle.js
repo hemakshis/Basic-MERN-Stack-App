@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { saveArticle } from '../../store/actions/articles';
+import { saveArticle } from '../../store/actions/articlesActions';
 
 class EditArticle extends Component {
 
@@ -34,7 +34,7 @@ class EditArticle extends Component {
         });
     }
 
-    handleFormSubmit = (e) => {
+    handleEditArticleFormSubmit = (e) => {
         e.preventDefault();
         const data = {
             title: this.state.article.title,
@@ -45,49 +45,43 @@ class EditArticle extends Component {
     }
 
     render() {
-        const redirect = this.props.saved ? <Redirect to={"/articles/" + this.props.match.params.id} /> : null;
-        const errors = this.props.errors ? <p>{this.props.errors}</p> : null;
-        if (redirect)
-            return redirect;
-        if (errors)
-            return errors;
+
+        if (this.props.saved)
+            return <Redirect to={"/articles/" + this.props.match.params.id} />;
+        if (this.props.errors)
+            return <p>{this.props.errors}</p>;
 
         return (
             <div className="container">
                 <br />
                 <h3 className="text-center">Add Article</h3>
                 <div className="jumbotron">
-                    <form onSubmit={this.handleFormSubmit}>
+                    <form onSubmit={this.handleEditArticleFormSubmit}>
                         <div className="form-group">
                             <label>Title</label>
                             <input
-                                name="title"
-                                defaultValue={this.state.article.title}
-                                onChange={this.handleInputChange}
-                                type="text"
+                                name="title" type="text"
                                 className="form-control"
-                                placeholder="Title of your article" />
+                                onChange={this.handleInputChange}
+                                defaultValue={this.state.article.title} />
                         </div>
                         <div className="form-group">
                             <label>Author</label>
                             <input
                                 disabled
-                                name="author"
-                                defaultValue={this.state.article.author}
-                                onChange={this.handleInputChange}
-                                type="text"
+                                name="author" type="text"
                                 className="form-control"
-                                placeholder="Your name" />
+                                onChange={this.handleInputChange}
+                                defaultValue={this.state.article.author} />
+
                         </div>
                         <div className="form-group">
                             <label>Body</label>
                             <textarea
-                                name="body"
-                                defaultValue={this.state.article.body}
-                                onChange={this.handleInputChange}
+                                name="body" style={{height: '200px'}}
                                 className="form-control"
-                                placeholder="Your article's contents goes here... Good luck!"
-                                style={{height: '200px'}} />
+                                onChange={this.handleInputChange}
+                                defaultValue={this.state.article.body} />
                         </div>
                         <button className="btn btn-success">Save</button>
                     </form>

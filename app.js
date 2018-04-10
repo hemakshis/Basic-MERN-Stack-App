@@ -1,6 +1,12 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
+import express from 'express';
+import mongoose from 'mongoose';
+import bodyParser from 'body-parser';
+import bcrypt from 'bcryptjs';
+
+import Article from './models/articlesModel.js';
+import User from './models/usersModel.js';
+import articles from './routes/articlesRoute.js'
+import users from './routes/usersRoute.js'
 
 mongoose.connect('mongodb://localhost/basic-mern-app');
 let db = mongoose.connection;
@@ -19,8 +25,6 @@ let app = express();
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
-const Article = require('./models/articleModel.js');
-
 app.use(function(req,res,next){
      res.header("Access-Control-Allow-Origin", "*");
      res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
@@ -37,46 +41,8 @@ app.get('/', (req, res) => {
     })
 });
 
-app.get('/articles/:id', (req, res) => {
-    Article.findById(req.params.id, (err, data) => {
-        res.send(data);
-    })
-})
-
-app.post('/article/add', (req, res) => {
-    const newArticle = new Article({
-        title: req.body.title,
-        author: req.body.author,
-        body: req.body.body
-    });
-
-    newArticle.save((err) => {
-        if (err) throw err;
-        else {
-            res.send('success');
-        }
-    });
-});
-
-app.post('/article/edit/:id', (req, res) => {
-    const updatedArticle = {
-        title: req.body.title,
-        author: req.body.author,
-        body: req.body.body
-    };
-
-    Article.findByIdAndUpdate(req.params.id, updatedArticle, (err, doc) => {
-        if (err) throw err;
-        else res.send('success');
-    });
-});
-
-app.delete('/article/delete/:id', (req, res) => {
-    console.log('[DELETING...]', req.params.id);
-    Article.remove({_id: req.params.id}, err => {
-        res.send('success');
-    });
-});
+app.use('/articles', articles);
+app.use('/users', users);
 
 app.listen(5000, () => {
     console.log('Server started on port 5000');

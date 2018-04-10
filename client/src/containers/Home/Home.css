@@ -1,7 +1,10 @@
 .AddArticleButton {
+    box-shadow: 3px 3px #547393;
     margin: 8px 8px 0px 0px;
 }
 
 .Header {
+    box-shadow: 3px 3px #ccc;
+    border-radius: 5px;
     padding: 12px 0px 0px 12px;
 }

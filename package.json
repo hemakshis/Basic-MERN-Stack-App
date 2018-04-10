@@ -8,12 +8,14 @@
         "client-server": "npm start --prefix client",
         "client": "cd client && npm start",
         "server": "node app.js",
-        "dev": "concurrently \"npm run server\" \"npm run client\""
+        "dev": "concurrently \"npm run server\" \"npm run client\"",
+        "start-babel": "babel-node --presets es2015 app.js"
     },
     "author": "Hemakshi Sachdev",
     "license": "ISC",
     "dependencies": {
         "babel-preset-es2015-node6": "^0.4.0",
+        "bcryptjs": "^2.4.3",
         "body-parser": "^1.18.2",
         "concurrently": "^3.5.1",
         "express": "^4.16.3",
@@ -22,6 +24,9 @@
         "source-map-support": "^0.5.4"
     },
     "devDependencies": {
+        "babel-cli": "^6.26.0",
+        "babel-env": "^2.4.1",
+        "babel-preset-es2015": "^6.24.1",
         "nodemon": "^1.17.3"
     }
 }

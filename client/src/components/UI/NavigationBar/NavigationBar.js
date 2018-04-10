@@ -1,6 +1,5 @@
 import React from 'react';
 import {NavLink} from 'react-router-dom';
-// import './NavigationBar.css';
 
 const navigationBar = () => {
     return (
@@ -13,10 +12,10 @@ const navigationBar = () => {
             <div className="collapse navbar-collapse" id="myNavBar">
                 <ul className="navbar-nav ml-auto">
                     <li className="nav-item mr-2">
-                        <NavLink exact to="/login" className="btn btn-outline-primary" activeClassName="btn btn-primary">Login</NavLink>
+                        <NavLink exact to="/login" className="btn btn-outline-primary">Login</NavLink>
                     </li>
                     <li className="nav-item">
-                        <NavLink exact to="/signup" className="btn btn-primary" activeClassName="btn btn-outline-primary">Sign Up</NavLink>
+                        <NavLink exact to="/signup" className="btn btn-primary">Sign Up</NavLink>
                     </li>
                 </ul>
             </div>

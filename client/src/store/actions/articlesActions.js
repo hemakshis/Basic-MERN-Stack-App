@@ -1,31 +1,31 @@
-import * as actionTypes from './actionTypes.js';
+import * as actionTypes from './actionTypes';
 
 const URL = "http://localhost:5000";
 
 const allArticlesReceivedSuccessfully = (articles) => {
     return {
-        type: actionTypes.GET_ALL_ARTICLES,
+        type: actionTypes.GOT_ALL_ARTICLES,
         articles: articles
     };
 };
 
 const articleReceivedSuccessfully = (article) => {
     return {
-        type: actionTypes.GET_ARTICLE,
+        type: actionTypes.GOT_SINGLE_ARTICLE,
         article: article
     };
 };
 
 const newArticleSubmittedSuccessfully = () => {
     return {
-        type: actionTypes.NEW_ARTICLE_SUBMITTED,
+        type: actionTypes.SUBMITTED_NEW_ARTICLE,
         submitted: true
     };
 };
 
 const errorSubmittingNewArticle = (err) => {
     return {
-        type: actionTypes.ERROR_SUBMITTING_ARTICLE,
+        type: actionTypes.ERROR_SUBMITTING_NEW_ARTICLE,
         error: err
     };
 };
@@ -85,7 +85,7 @@ export const submitNewArticle = (articleData) => {
             body: JSON.stringify(articleData)
         };
         return (
-            fetch(URL + '/article/add', options)
+            fetch(URL + '/articles/add', options)
             .then(res => {
                 if (res.ok) {
                     dispatch(newArticleSubmittedSuccessfully())
@@ -107,7 +107,7 @@ export const saveArticle = (articleId, articleData) => {
             method: 'post',
             body: JSON.stringify(articleData)
         }
-        fetch(URL + '/article/edit/' + articleId, options)
+        fetch(URL + '/articles/edit/' + articleId, options)
         .then(res => {
             if (res.ok) {
                 dispatch(articleSavedSuccessfully())
@@ -127,7 +127,7 @@ export const deleteArticle = (articleId) => {
             },
             method: 'delete'
         }
-        fetch(URL + '/article/delete/' + articleId, options)
+        fetch(URL + '/articles/delete/' + articleId, options)
             .then(res => {
                 dispatch(deletedArticleSuccessfully(articleId))
             })

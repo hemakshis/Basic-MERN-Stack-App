@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getAllArticles } from '../../store/actions/articles.js';
+import { getAllArticles } from '../../store/actions/articlesActions';
 import Articles from '../Articles/Articles';
 import WrappedLink from '../../components/UI/WrappedLink/WrappedLink';
 import './Home.css';

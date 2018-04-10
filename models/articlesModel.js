@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const ArticleSchema = mongoose.Schema({
     title: {
@@ -23,4 +23,6 @@ const ArticleSchema = mongoose.Schema({
     }
 });
 
-const Poll = module.exports = mongoose.model('Article', ArticleSchema);
+const Article = mongoose.model('Article', ArticleSchema);
+
+export default Article;

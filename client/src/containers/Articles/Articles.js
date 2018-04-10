@@ -1,13 +1,8 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import Article from '../../components/Article/Article';
-import './Articles.css';
 
 class Articles extends Component {
-
-    handleViewArticleClick(id) {
-        this.props.history.push({pathname: '/articles/' + id})
-    }
 
     render() {
         const articles = this.props.articles.map(article => (
@@ -16,8 +11,7 @@ class Articles extends Component {
                 id={article._id}
                 title={article.title}
                 author={article.author}
-                body={article.body}
-                click={() => this.handleViewArticleClick(article._id)} />
+                body={article.body} />
         ));
         return (
             <div>
