@@ -1,6 +1,15 @@
 import * as actionTypes from './actionTypes';
 
 const URL = "http://localhost:5000";
+const options = (data) => {
+    return {
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        method: 'post',
+        body: JSON.stringify(data)
+    };
+};
 
 const allArticlesReceivedSuccessfully = (articles) => {
     return {
@@ -77,15 +86,8 @@ export const getArticle = (articleId) => {
 
 export const submitNewArticle = (articleData) => {
     return dispatch => {
-        const options = {
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            method: 'post',
-            body: JSON.stringify(articleData)
-        };
         return (
-            fetch(URL + '/articles/add', options)
+            fetch(URL + '/articles/add', options(articleData))
             .then(res => {
                 if (res.ok) {
                     dispatch(newArticleSubmittedSuccessfully())
@@ -100,14 +102,7 @@ export const submitNewArticle = (articleData) => {
 
 export const saveArticle = (articleId, articleData) => {
     return dispatch => {
-        const options = {
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            method: 'post',
-            body: JSON.stringify(articleData)
-        }
-        fetch(URL + '/articles/edit/' + articleId, options)
+        fetch(URL + '/articles/edit/' + articleId, options(articleData))
         .then(res => {
             if (res.ok) {
                 dispatch(articleSavedSuccessfully())
@@ -121,13 +116,7 @@ export const saveArticle = (articleId, articleData) => {
 
 export const deleteArticle = (articleId) => {
     return dispatch => {
-        const options = {
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            method: 'delete'
-        }
-        fetch(URL + '/articles/delete/' + articleId, options)
+        fetch(URL + '/articles/delete/' + articleId, {method: 'delete'})
             .then(res => {
                 dispatch(deletedArticleSuccessfully(articleId))
             })

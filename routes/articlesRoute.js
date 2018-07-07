@@ -1,7 +1,7 @@
 import express from 'express';
-import Article from '../models/articlesModel';
+import Article from '../models/articlesModel.js';
 
-const router = express.Router();
+let router = express.Router();
 
 router.get('/:id', (req, res) => {
     Article.findById(req.params.id, (err, data) => {
@@ -38,6 +38,7 @@ router.post('/edit/:id', (req, res) => {
 });
 
 router.delete('/delete/:id', (req, res) => {
+    console.log(req.params.id);
     Article.remove({_id: req.params.id}, err => {
         res.send('success');
     });

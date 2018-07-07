@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import './App.css';
 import Home from './containers/Home/Home';
-import SignUp from './containers/SignUp/SignUp';
-import Login from './containers/Login/Login';
-import FullArticle from './containers/FullArticle/FullArticle';
-import AddArticle from './containers/AddArticle/AddArticle';
-import EditArticle from './containers/EditArticle/EditArticle';
+import Signup from './containers/Users/Signup/Signup';
+import Login from './containers/Users/Login/Login';
+import FullArticle from './containers/Articles/FullArticle/FullArticle';
+import AddArticle from './containers/Articles/AddArticle/AddArticle';
+import EditArticle from './containers/Articles/EditArticle/EditArticle';
 import NavigationBar from './components/UI/NavigationBar/NavigationBar';
 
 class App extends Component {
@@ -19,7 +19,7 @@ class App extends Component {
                     <Route path="/article/edit/:id" component={EditArticle} />
                     <Route path="/articles/:id" component={FullArticle} />
                     <Route path="/login" component={Login} />
-                    <Route path="/signup" component={SignUp} />
+                    <Route path="/signup" component={Signup} />
                     <Route path="/" component={Home} />
                 </Switch>
             </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import {NavLink} from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 const navigationBar = () => {
     return (
@@ -15,7 +15,7 @@ const navigationBar = () => {
                         <NavLink exact to="/login" className="btn btn-outline-primary">Login</NavLink>
                     </li>
                     <li className="nav-item">
-                        <NavLink exact to="/signup" className="btn btn-primary">Sign Up</NavLink>
+                        <NavLink exact to="/signup" className="btn btn-primary">Signup</NavLink>
                     </li>
                 </ul>
             </div>
