@@ -8,7 +8,11 @@ class Login extends Component {
     }
     render() {
         return (
-            <h3>Welcome to Login</h3>
+            <div className="container">
+                <br />
+                <h3 className="text-center">Login</h3>
+                
+            </div>
         );
     }
 }

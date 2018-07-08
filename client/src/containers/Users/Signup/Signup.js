@@ -129,7 +129,7 @@ class Signup extends Component {
         this.handleValidation(field, value);
     }
 
-    handleSignupFormSubmit = (e) => {
+    handleSignup = (e) => {
         e.preventDefault();
         if (this.state.hasError)
             return;
@@ -147,7 +147,7 @@ class Signup extends Component {
                     <br />
                     <h3 className="text-center">Join Our Community!</h3>
                     <div className="jumbotron">
-                        <form onSubmit={this.handleSignupFormSubmit}>
+                        <form onSubmit={this.handleSignup}>
                             <InputField type="text" name="name" label="Name"
                                 hasError={this.state.hasError}
                                 errors={this.state.errors}
