@@ -9,9 +9,9 @@ const inputField = (props) => {
             <label>{props.label}</label>
             <input type={props.type} name={props.name}
                 defaultValue="" placeholder={props.label}
-                className={props.hasError && props.errors[props.name] ? OnErrorClass : 'form-control'}
+                className={props.errors[props.name] ? OnErrorClass : 'form-control'}
                 onChange={props.onChange} />
-            {props.hasError && props.errors[props.name] ? <ErrorMsg msg={props.errors[props.name]} /> : null}
+            {props.errors[props.name] ? <ErrorMsg msg={props.errors[props.name]} /> : null}
         </div>
     );
 }

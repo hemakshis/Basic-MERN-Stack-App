@@ -20,7 +20,6 @@ class Signup extends Component {
             confirmPassword: ''
         },
         errors: {},
-        hasError: false,
         redirect: false
     };
 
@@ -51,8 +50,14 @@ class Signup extends Component {
                         ...errors,
                         password: 'Password too short'
                     }
+                } else if (this.state.userDetails.confirmPassword !== '' && value !== this.state.userDetails.confirmPassword) {
+                    errors = {
+                        ...errors,
+                        confirmPassword: 'Passwords do not match'
+                    }
                 } else {
                     delete errors.password;
+                    delete errors.confirmPassword;
                 }
                 
             } else if (field === 'confirmPassword' ) {
@@ -83,8 +88,7 @@ class Signup extends Component {
                         userDetails: {...prevState.userDetails},
                         errors: {
                             ...errors
-                        },
-                        hasError: true
+                        }
                     };
                 });
             })
@@ -95,18 +99,15 @@ class Signup extends Component {
                     userDetails: {...prevState.userDetails},
                     errors: {
                         ...errors
-                    },
-                    hasError: true
+                    }
                 };
             });
-        }
-        else if (Object.keys(errors).length === 0 && errors.constructor === Object ) {
+        } else {
             this.setState((prevState) => {
                 return {
                     ...prevState,
                     userDetails: {...prevState.userDetails},
-                    errors: {},
-                    hasError: false
+                    errors: {}
                 }; 
             })
         }
@@ -131,10 +132,33 @@ class Signup extends Component {
 
     handleSignup = (e) => {
         e.preventDefault();
-        if (this.state.hasError)
+        if (Object.keys(this.state.errors).length !== 0){
             return;
+        }
         else {
-            this.props.userSignupRequest(this.state.userDetails);
+            let errors = {...this.state.errors};
+            const fields = ['name', 'email', 'username', 'password', 'confirmPassword'];
+            for (var i = 0; i < fields.length; i++ ) {
+                if (this.state.userDetails[fields[i]] === '') {
+                    console.log(fields[i] + ' is empty');
+                    errors = {
+                        ...errors,
+                        [fields[i]]: 'This field is required'
+                    }
+                }
+            }
+            if (Object.keys(errors).length !== 0) {
+                this.setState(prevState => {
+                    return {
+                        ...prevState,
+                        userDetails: {...prevState.userDetails},
+                        errors: {...prevState.errors, ...errors}
+                    }
+                });
+                return;
+            } else {
+                this.props.userSignupRequest(this.state.userDetails);
+            }
         }
     }
 
@@ -149,23 +173,18 @@ class Signup extends Component {
                     <div className="jumbotron">
                         <form onSubmit={this.handleSignup}>
                             <InputField type="text" name="name" label="Name"
-                                hasError={this.state.hasError}
                                 errors={this.state.errors}
                                 onChange={this.handleInputChange} />
                             <InputField type="text" name="username" label="Username"
-                                hasError={this.state.hasError}
                                 errors={this.state.errors}
                                 onChange={this.handleInputChange} />
                             <InputField type="email" name="email" label="Email Address"
-                                hasError={this.state.hasError}
                                 errors={this.state.errors}
                                 onChange={this.handleInputChange} />
                             <InputField type="password" name="password" label="Password"
-                                hasError={this.state.hasError}
                                 errors={this.state.errors}
                                 onChange={this.handleInputChange} />
                             <InputField type="password" name="confirmPassword" label="Confirm Password"
-                                hasError={this.state.hasError}
                                 errors={this.state.errors}
                                 onChange={this.handleInputChange} />
                             <button className="btn btn-primary">Sign Up</button>
