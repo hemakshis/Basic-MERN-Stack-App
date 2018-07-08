@@ -14,10 +14,24 @@ const options = data => {
 export const validateUserInput = (userInputDetails) => {
     return dispatch => {
         return fetch(URL + '/users/validate', options(userInputDetails))
-            // .then(res => res.json())
-            // .then(data => {
-            //     console.log('[IN DISPATCH]', data);
-            //     dispatch({type: actionTypes.VALIDATION_ERRORS, validationErrors: data});
-            // })
+    }
+}
+
+export const userSignupRequest = (userSignupDetails) => {
+    return dispatch => {
+        fetch(URL + '/users/signup', options(userSignupDetails))
+        .then(res => res.json())
+        .then(result => {
+            dispatch({type: actionTypes.ADDED_USER})
+        })
+        .catch(error => {
+            dispatch({type: actionTypes.ERROR_ADDING_USER})
+        })
+    }
+}
+
+export const undoRedirect = () => {
+    return {
+        type: actionTypes.UNDO_REDIRECT
     }
 }

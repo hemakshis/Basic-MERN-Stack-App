@@ -1,15 +1,29 @@
 import * as actionTypes from '../actions/actionTypes'
 
 const initialState = {
-    validationErrors: {}
+    addedUser: false,
+    errorAddingUser: false
 };
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
-        case actionTypes.VALIDATION_ERRORS:
+        case actionTypes.ADDED_USER:
             return {
                 ...state,
-                validationErrors: action.validationErrors
+                addedUser: true,
+                errorAddingUser: false
+            }
+        case actionTypes.ERROR_ADDING_USER:
+            return {
+                ...state,
+                addedUser: false,
+                errorAddingUser: true
+            }
+        case actionTypes.UNDO_REDIRECT:
+            return {
+                ...state,
+                addedUser: false,
+                errorAddingUser: false
             }
         default:
             return state;

@@ -20,23 +20,7 @@ router.post('/validate', (req, res) => {
         }
 
         res.json(errors);
-    })
-    // }) {
-    //     if (err) reject(err);
-    //     if (Boolean(user)) {
-
-    //     }
-    //     else {
-
-    //     };
-    // }).then(function(available) {
-    //     if (available === null) {
-    //         res.json({});
-    //     } else {
-    //         
-    //     }
-    //     res.json(errors);
-    // });
+    });
 
 });
 

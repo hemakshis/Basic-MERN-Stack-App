@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { validateUserInput } from '../../../store/actions/usersActions'
-import ErrorMsg from '../../../components/ErrorMsg/ErrorMsg';
-import './Signup.css';
-import { POINT_CONVERSION_HYBRID } from 'constants';
+import { validateUserInput, userSignupRequest } from '../../../store/actions/usersActions'
+import InputField from '../../../components/InputField/InputField';
 
 // Check if E-mail is Valid or not
 const validateEmail = (email) => {
@@ -28,7 +26,6 @@ class Signup extends Component {
 
     handleValidation = (field, value) => {
         let errors = {...this.state.errors};
-        let hasError = true;
 
         if (value === '') {
             errors = {
@@ -68,9 +65,6 @@ class Signup extends Component {
                     delete errors.confirmPassword;
                 }     
             }
-            else {
-                hasError = false;
-            }
         }
 
         if ((field === 'username' || field === 'email') && value !== '') {
@@ -78,7 +72,6 @@ class Signup extends Component {
             .then(res => res.json())
             .then(data => {
                 if (Object.keys(data).length !== 0) {
-                    hasError = true;
                     errors = {
                         ...errors,
                         ...data
@@ -138,14 +131,15 @@ class Signup extends Component {
 
     handleSignupFormSubmit = (e) => {
         e.preventDefault();
-        this.props.userSignupRequest(this.state.userDetails);
+        if (this.state.hasError)
+            return;
+        else {
+            this.props.userSignupRequest(this.state.userDetails);
+        }
     }
 
     render() {
-        const errors = {...this.state.errors};
-        const hasError = this.state.hasError;
-        const OnErrorClass = ['form-control', 'InputError'].join(' ');
-        if (this.props.redirect) {
+        if (this.props.signupSuccessful) {
             return <Redirect to="/login" />;
         } else {
             return (
@@ -154,47 +148,26 @@ class Signup extends Component {
                     <h3 className="text-center">Join Our Community!</h3>
                     <div className="jumbotron">
                         <form onSubmit={this.handleSignupFormSubmit}>
-                            <div className="form-group">
-                                <label>Name</label>
-                                <input type="text" name="name"
-                                    className={hasError && errors.name ? OnErrorClass : 'form-control'}
-                                    defaultValue="" placeholder="Your Name"
-                                    onChange={this.handleInputChange} />
-                                {hasError && errors.name ? <ErrorMsg msg={errors.name} /> : null}
-                            </div>
-                            <div className="form-group">
-                                <label>Username</label>
-                                <input
-                                    type="text" name="username"
-                                    className={hasError && errors.username ? OnErrorClass : 'form-control'}
-                                    defaultValue="" placeholder="Username"
-                                    onChange={this.handleInputChange} />
-                                {hasError && errors.username ? <ErrorMsg msg={errors.username} /> : null}
-                            </div>
-                            <div className="form-group">
-                                <label>Email Address</label>
-                                <input type="email" name="email"
-                                    className={hasError && errors.email ? OnErrorClass : 'form-control'}
-                                    defaultValue="" placeholder="Email Address"
-                                    onChange={this.handleInputChange} />
-                                {hasError && errors.email ? <ErrorMsg msg={errors.email} /> : null}
-                            </div>
-                            <div className="form-group">
-                                <label>Password</label>
-                                <input type="password" name="password"
-                                    className={hasError && errors.password ? OnErrorClass : 'form-control'}
-                                    defaultValue="" placeholder="Password"
-                                    onChange={this.handleInputChange} />
-                                {hasError && errors.password ? <ErrorMsg msg={errors.password} /> : null}
-                            </div>
-                            <div className="form-group">
-                                <label>Confirm Password</label>
-                                <input type="password" name="confirmPassword"
-                                    className={hasError && errors.confirmPassword ? OnErrorClass : 'form-control'}
-                                    defaultValue="" placeholder="Confirm Password"
-                                    onChange={this.handleInputChange} />
-                                {hasError && errors.confirmPassword ? <ErrorMsg msg={errors.confirmPassword} /> : null}
-                            </div>
+                            <InputField type="text" name="name" label="Name"
+                                hasError={this.state.hasError}
+                                errors={this.state.errors}
+                                onChange={this.handleInputChange} />
+                            <InputField type="text" name="username" label="Username"
+                                hasError={this.state.hasError}
+                                errors={this.state.errors}
+                                onChange={this.handleInputChange} />
+                            <InputField type="email" name="email" label="Email Address"
+                                hasError={this.state.hasError}
+                                errors={this.state.errors}
+                                onChange={this.handleInputChange} />
+                            <InputField type="password" name="password" label="Password"
+                                hasError={this.state.hasError}
+                                errors={this.state.errors}
+                                onChange={this.handleInputChange} />
+                            <InputField type="password" name="confirmPassword" label="Confirm Password"
+                                hasError={this.state.hasError}
+                                errors={this.state.errors}
+                                onChange={this.handleInputChange} />
                             <button className="btn btn-primary">Sign Up</button>
                         </form>
                     </div>
@@ -206,13 +179,14 @@ class Signup extends Component {
 
 const mapStateToProps = state => {
     return {
-        errors: state.users.validationErrors
+        signupSuccessful: state.users.addedUser && !state.users.errorAddingUser
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        validateUserInput: (userInputDetails) => dispatch(validateUserInput(userInputDetails))
+        validateUserInput: (userInputDetails) => dispatch(validateUserInput(userInputDetails)),
+        userSignupRequest: (userSignupDetails) => dispatch(userSignupRequest(userSignupDetails))
     };
 };
 

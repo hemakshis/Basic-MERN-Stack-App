@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-// import { connect } from 'react-redux';
-// import { undoRedirectFromSignupToLogin } from '../../../store/actions/usersActions';
+import { connect } from 'react-redux';
+import { undoRedirect } from '../../../store/actions/usersActions';
 
 class Login extends Component {
     componentWillMount() {
-        // this.props.undoRedirectFromSignupToLogin()
+        this.props.undoRedirect()
     }
     render() {
         return (
@@ -13,11 +13,10 @@ class Login extends Component {
     }
 }
 
-// const mapDispatchToProps = dispatch => {
-//     return {
-//         undoRedirectFromSignupToLogin: () => dispatch(undoRedirectFromSignupToLogin())
-//     };
-// };
+const mapDispatchToProps = dispatch => {
+    return {
+        undoRedirect: () => dispatch(undoRedirect())
+    };
+};
 
-// export default connect(null, mapDispatchToProps)(Login);
-export default Login;
+export default connect(null, mapDispatchToProps)(Login);
