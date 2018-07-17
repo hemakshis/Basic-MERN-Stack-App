@@ -38,7 +38,6 @@ router.post('/edit/:id', (req, res) => {
 });
 
 router.delete('/delete/:id', (req, res) => {
-    console.log(req.params.id);
     Article.remove({_id: req.params.id}, err => {
         res.send('success');
     });

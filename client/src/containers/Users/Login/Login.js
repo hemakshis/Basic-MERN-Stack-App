@@ -11,7 +11,9 @@ class Login extends Component {
             <div className="container">
                 <br />
                 <h3 className="text-center">Login</h3>
+                <form onSubmit={this.handleLogin}>
                 
+                </form>
             </div>
         );
     }

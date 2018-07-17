@@ -10,6 +10,14 @@ const validateEmail = (email) => {
     return re.test(email);
 }
 
+const fields = [
+    {name: 'name', type: 'text', label: 'Name'},
+    {name: 'username', type: 'text', label: 'Username'},
+    {name: 'email', type: 'email', label: 'E-mail Address'},
+    {name: 'password', type: 'password', label: 'Password'},
+    {name: 'confirmPassword', type: 'password', label: 'Confirm Password'}
+];
+
 class Signup extends Component {
     state = {
         userDetails: {
@@ -137,13 +145,12 @@ class Signup extends Component {
         }
         else {
             let errors = {...this.state.errors};
-            const fields = ['name', 'email', 'username', 'password', 'confirmPassword'];
             for (var i = 0; i < fields.length; i++ ) {
                 if (this.state.userDetails[fields[i]] === '') {
                     console.log(fields[i] + ' is empty');
                     errors = {
                         ...errors,
-                        [fields[i]]: 'This field is required'
+                        [fields[i].name]: 'This field is required'
                     }
                 }
             }
@@ -166,27 +173,19 @@ class Signup extends Component {
         if (this.props.signupSuccessful) {
             return <Redirect to="/login" />;
         } else {
+            const inputFields = fields.map(field =>
+                <InputField key={field.name} type={field.type} name={field.name}
+                            label={field.label}
+                            errors={this.state.errors}
+                            onChange={this.handleInputChange} />
+            )
             return (
                 <div className="container">
                     <br />
                     <h3 className="text-center">Join Our Community!</h3>
                     <div className="jumbotron">
                         <form onSubmit={this.handleSignup}>
-                            <InputField type="text" name="name" label="Name"
-                                errors={this.state.errors}
-                                onChange={this.handleInputChange} />
-                            <InputField type="text" name="username" label="Username"
-                                errors={this.state.errors}
-                                onChange={this.handleInputChange} />
-                            <InputField type="email" name="email" label="Email Address"
-                                errors={this.state.errors}
-                                onChange={this.handleInputChange} />
-                            <InputField type="password" name="password" label="Password"
-                                errors={this.state.errors}
-                                onChange={this.handleInputChange} />
-                            <InputField type="password" name="confirmPassword" label="Confirm Password"
-                                errors={this.state.errors}
-                                onChange={this.handleInputChange} />
+                            {inputFields}
                             <button className="btn btn-primary">Sign Up</button>
                         </form>
                     </div>

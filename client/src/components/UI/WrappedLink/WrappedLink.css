@@ -1,6 +1,6 @@
 .WrappedButton {
     float: right;
-    display: inline-block;
+    padding: 6px 12px;
 }
 
 .WrappedLink {

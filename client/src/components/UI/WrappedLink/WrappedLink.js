@@ -4,13 +4,12 @@ import './WrappedLink.css'
 
 const wrappedLink = (props) => {
     return (
-        <button
-            className={[...props.buttonClasses, "WrappedButton"].join(' ')}
-            onClick={props.click}>
-            <Link
-                to={props.to}
-                className="WrappedLink">{props.children}</Link>
-        </button>
+        <Link to={props.to} className="WrappedLink">
+            <button
+                className={[...props.buttonClasses, "WrappedButton"].join(' ')}
+                onClick={props.click}>
+                {props.children}</button>
+        </Link>
     );
 }
 
