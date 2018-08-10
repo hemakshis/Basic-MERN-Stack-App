@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { validateUserInput, userSignupRequest } from '../../../store/actions/usersActions'
 import InputField from '../../../components/InputField/InputField';
 
@@ -20,15 +20,8 @@ const fields = [
 
 class Signup extends Component {
     state = {
-        userDetails: {
-            name: '',
-            username: '',
-            email: '',
-            password: '',
-            confirmPassword: ''
-        },
-        errors: {},
-        redirect: false
+        userDetails: {},
+        errors: {}
     };
 
     handleValidation = (field, value) => {
@@ -58,7 +51,7 @@ class Signup extends Component {
                         ...errors,
                         password: 'Password too short'
                     }
-                } else if (this.state.userDetails.confirmPassword !== '' && value !== this.state.userDetails.confirmPassword) {
+                } else if (this.state.userDetails.confirmPassword && value !== this.state.userDetails.confirmPassword) {
                     errors = {
                         ...errors,
                         confirmPassword: 'Passwords do not match'
@@ -147,7 +140,6 @@ class Signup extends Component {
             let errors = {...this.state.errors};
             for (var i = 0; i < fields.length; i++ ) {
                 if (this.state.userDetails[fields[i]] === '') {
-                    console.log(fields[i] + ' is empty');
                     errors = {
                         ...errors,
                         [fields[i].name]: 'This field is required'
@@ -169,29 +161,31 @@ class Signup extends Component {
         }
     }
 
-    render() {
+    componentDidUpdate() {
         if (this.props.signupSuccessful) {
-            return <Redirect to="/login" />;
-        } else {
-            const inputFields = fields.map(field =>
-                <InputField key={field.name} type={field.type} name={field.name}
-                            label={field.label}
-                            errors={this.state.errors}
-                            onChange={this.handleInputChange} />
-            )
-            return (
-                <div className="container">
-                    <br />
-                    <h3 className="text-center">Join Our Community!</h3>
-                    <div className="jumbotron">
-                        <form onSubmit={this.handleSignup}>
-                            {inputFields}
-                            <button className="btn btn-primary">Sign Up</button>
-                        </form>
-                    </div>
-                </div>
-            );
+            this.props.history.push('/login');
         }
+    }
+
+    render() {    
+        const inputFields = fields.map(field =>
+            <InputField key={field.name}
+                        type={field.type} name={field.name} label={field.label}
+                        errors={this.state.errors}
+                        onChange={this.handleInputChange} />
+        )
+        return (
+            <div className="container">
+                <br />
+                <h3 className="text-center">Join Our Community!</h3>
+                <div className="jumbotron">
+                    <form onSubmit={this.handleSignup}>
+                        {inputFields}
+                        <button className="btn btn-primary">Sign Up</button>
+                    </form>
+                </div>
+            </div>
+        );
     }
 }
 
@@ -208,4 +202,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Signup);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Signup));

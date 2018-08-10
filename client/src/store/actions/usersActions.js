@@ -1,4 +1,5 @@
 import * as actionTypes from './actionTypes'
+import jwt from 'jsonwebtoken';
 
 const URL = "http://localhost:5000";
 const options = data => {
@@ -27,11 +28,24 @@ export const userSignupRequest = (userSignupDetails) => {
         .catch(error => {
             dispatch({type: actionTypes.ERROR_ADDING_USER})
         })
-    }
+    } 
 }
 
-export const undoRedirect = () => {
-    return {
-        type: actionTypes.UNDO_REDIRECT
-    }
+export const userLoginRequest = (userLoginDetails) => {
+    return dispatch => {
+        fetch(URL + '/users/login', options(userLoginDetails))
+        .then(res => res.json())
+        .then(data => {
+            if (data.errors) {
+                console.log(data.errors);
+                dispatch({type: actionTypes.ERROR_LOGGING_USER, errors: data.errors});
+            } else if (data.token) {
+                const token = data.token;
+                localStorage.setItem('jwtToken', token);
+                const username = jwt.decode(token);
+                console.log(username);
+                dispatch({type: actionTypes.LOGGEDIN_USER, loginSuccessful: true, username: token})
+            }
+        })
+    }   
 }

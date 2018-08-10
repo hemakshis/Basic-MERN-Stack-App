@@ -1,5 +1,7 @@
 import express from 'express';
 import User from '../models/usersModel.js';
+import jwt from 'jsonwebtoken';
+import config from '../config'
 
 const router = express.Router();
 
@@ -37,6 +39,37 @@ router.post('/signup', (req, res) => {
         else {
             res.json({success: 'success'});
         }
+    })
+});
+
+router.post('/login', (req, res) => {
+    const username = req.body.username;
+    const password = req.body.password;
+
+    let response = {};
+    console.log(req.body)
+    User.findOne({username: username}, (err, user) => {
+        if (err) throw err;
+        if (Boolean(user)) {
+            console.log(user)
+            if (user.password === password) {
+                const token = jwt.sign({
+                    id: user._id,
+                    username: user.username
+                }, config.jwtSecret);
+                response = {token}
+            } else {
+                response = {
+                    errors: {invalidCredentials: 'Invalid Username or Password'}
+                }
+            }
+        } else {
+            response = {
+                errors: {invalidCredentials: 'Invalid Username or Password'}
+            }
+        }
+        console.log(response);
+        res.json(response);
     })
 });
 
