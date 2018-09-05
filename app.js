@@ -1,10 +1,8 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
-import bcrypt from 'bcryptjs';
 
 import Article from './models/articlesModel.js';
-import User from './models/usersModel.js';
 import articles from './routes/articlesRoute.js'
 import users from './routes/usersRoute.js'
 
