@@ -1,53 +1,71 @@
 import express from 'express';
-import User from '../models/usersModel.js';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import User from '../models/usersModel.js';
 import config from '../config';
 
 const router = express.Router();
 
-router.post('/validate', (req, res) => {
+// Check if E-mail is Valid or not
+const validateEmail = (email) => {
+    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+}
+
+const checkUserUniqueness = async (field, value) => {
+    const { error, isUnique } = await User.findOne({[field]: value}).exec()
+        .then(user => {
+            let res = {};
+            if (Boolean(user)) {
+                res = { error: { [field]: "This " + field + " is not available" }, isUnique: false };
+            } else {
+                res = { error: { [field]: "" }, isUnique: true };
+            }
+            return res;
+        })
+        .catch(err => console.log(err))
+    return { error, isUnique };
+}
+
+router.post('/validate', async (req, res) => {
     const { field, value } = req.body;
-    let errors = {};
-    User.findOne({[field]: value}, (err, user) => {
-        if (err) throw err;
-        if (Boolean(user)) {
-            errors = {
-                [field]: "This " + field + " is not available"
-            };
-            res.json({ errors });
-        } else {
-            res.json({ success: 'success' });
-        }
-    });
+    const { error, isUnique } = await checkUserUniqueness(field, value);
+
+    if (isUnique) {
+        res.json({ success: 'success' });
+    } else {
+        res.json({ error });
+    }
 });
 
 router.post('/signup', (req, res) => {
-    const name = req.body.name;
-    const username = req.body.username;
-    const email = req.body.email;
-    const password = req.body.password;
+    const name = req.body.name || '';
+    const username = req.body.username || '';
+    const email = req.body.email || '';
+    const password = req.body.password || '';
+    const confirmPassword = req.body.confirmPassword || '';
+
+    const reqBody = { name, username, email, password, confirmPassword };
 
     let errors = {};
-    Object.keys(req.body).forEach(field => {
-        if (req.body[field] === '') {
-            errors = {...errors, [field]: "This " + field + " is required"}
+    Object.keys(reqBody).forEach(async field => {
+        if (reqBody[field] === '') {
+            errors = {...errors, [field]: 'This field is required'}
         }
-        else if (field === 'username' || field === 'email') {
-            const value = req.body[field];
-            User.findOne({[field]: value}, (err, user) => {
-                if (err) throw err;
-                if (Boolean(user)) {
-                    errors = {
-                        ...errors,
-                        [field]: "This " + field + " is not available"
-                    };
-                }
-            });
+        if (field === 'username' || field === 'email') {
+            const value = reqBody[field];
+            const { error, isUnique } = await checkUserUniqueness(field, value);
+            if (!isUnique) {
+                errors = {...errors, ...error};
+            }
         }
-        else if (field === 'password' && password !== '' && password < 4) {
+        if (field === 'email' && !validateEmail(reqBody[field])) {
+            errors = {...errors, [field]: 'Not a valid Email'}
+        }
+        if (field === 'password' && password !== '' && password < 4) {
             errors = {...errors, [field]: 'Password too short'}
         }
-        else if (field === 'confirmPassword' && confirmPassword !== password) {
+        if (field === 'confirmPassword' && confirmPassword !== password) {
             errors = {...errors, [field]: 'Passwords do not match'}
         }
     });
@@ -61,15 +79,22 @@ router.post('/signup', (req, res) => {
             email: email,
             password: password
         });
-    
-        newUser.save(err => {
-            if (err) throw err;
-            else {
-                res.json({ success: 'success' });
-            }
+
+        // Generate the Salt
+        bcrypt.genSalt(10, (err, salt) => {
+            if(err) return err;
+            // Create the hashed password
+            bcrypt.hash(newUser.password, salt, (err, hash) => {
+                if(err) return err;
+                newUser.password = hash;
+                // Save the User
+                newUser.save(function(err){
+                    if(err) return err
+                    res.json({ success: 'success' });
+                });
+            });
         });
     }
-
 });
 
 router.post('/login', (req, res) => {
@@ -80,26 +105,24 @@ router.post('/login', (req, res) => {
     User.findOne({username: username}, (err, user) => {
         if (err) throw err;
         if (Boolean(user)) {
-            console.log(user)
-            if (user.password === password) {
-                const token = jwt.sign({
-                    id: user._id,
-                    username: user.username
-                }, config.jwtSecret);
-                response = {token}
-            } else {
-                response = {
-                    errors: { invalidCredentials: 'Invalid Username or Password' }
+            // Match Password
+            bcrypt.compare(password, user.password, function(err, isMatch){
+                if(err) return err;
+                if(isMatch){
+                    const token = jwt.sign({
+                            id: user._id,
+                            username: user.username
+                        }, config.jwtSecret);
+                    response = {token}
+                } else {
+                    response = { errors: { invalidCredentials: 'Invalid Username or Password' } };
                 }
-            }
+            });
         } else {
-            response = {
-                errors: { invalidCredentials: 'Invalid Username or Password' }
-            }
+            response = { errors: { invalidCredentials: 'Invalid Username or Password' } }
         }
-
         res.json(response);
-    })
+    });
 });
 
 export default router;

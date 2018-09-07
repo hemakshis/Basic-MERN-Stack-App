@@ -11,7 +11,7 @@ const inputField = (props) => {
                 defaultValue="" placeholder={props.label}
                 className={props.errors[props.name] ? OnErrorClass : 'form-control'}
                 onChange={props.onChange} />
-            {props.errors[props.name] ? <ErrorMsg msg={props.errors[props.name]} /> : null}
+            {props.errors[props.name] !== '' ? <ErrorMsg msg={props.errors[props.name]} /> : null}
         </div>
     );
 }

@@ -1,5 +1,5 @@
 import * as actionTypes from './actionTypes'
-import jwt from 'jsonwebtoken';
+// import jwt from 'jsonwebtoken';
 
 const URL = "http://localhost:5000";
 const options = data => {

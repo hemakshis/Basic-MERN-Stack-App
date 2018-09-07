@@ -24,80 +24,52 @@ class Signup extends Component {
         errors: {}
     };
 
-    handleValidation = (field, value) => {
-        let errors = {};
-        const stateErrors = {...this.state.errors};
-
+    commonValidation = (field, value) => {
+        let error = {};
         if (value === '') {
-            errors = {
-                [field]: 'This field is required'
-            }
+            error = { [field]: 'This field is required' }
         } else {
             if (field === 'email' && !validateEmail(value)) {
-                    errors = {
-                        email: 'Not a valid Email'
-                    }
-            } else if (field === 'password') {
-                if (value.length < 4) {
-                    errors = {
-                        password: 'Password too short'
-                    }
-                } else if (this.state.userDetails.confirmPassword && value !== this.state.userDetails.confirmPassword) {
-                    errors = {
-                        confirmPassword: 'Passwords do not match'
-                    }
-                } else {
-                    delete errors.confirmPassword;
-                }
-            } else if (field === 'confirmPassword' ) {
-                if (value !== this.state.userDetails.password) {
-                    errors = {
-                        confirmPassword: 'Passwords do not match'
-                    }
-                }     
-            }
-        }
-
-        if (!Object.keys(errors).includes(field) && Object.keys(this.state.errors).includes(field)) {
-            delete stateErrors[field];
-        }
-
-        errors = {...stateErrors, ...errors};
-
-        this.setState((prevState) => {
-            return {
-                ...prevState,
-                userDetails: {...prevState.userDetails},
-                errors: {
-                    ...errors
-                }
-            };
-        });
-    }
-
-    handleUserUniqueness = ({ field, value }) => {
-        let errors = {...this.state.errors};
-        this.props.checkUserUniqueness({ field, value })
-        .then(res => res.json())
-        .then(response => {
-            if (response.errors) {
-                errors = {...errors, ...response.errors};
+                error = { email: 'Not a valid Email' };
+            } else if (field === 'password' && value.length < 4) {
+                error = { password: 'Password too short' };
+            } else if (field === 'confirmPassword' && value !== this.state.userDetails.password) {
+                error = { confirmPassword: 'Passwords do not match' }
             } else {
-                delete errors[field];
+                error[field] = '';
             }
-            this.setState(prevState => {
-                return {
-                    ...prevState,
-                    userDetails: {...prevState.userDetails},
-                    errors: {...errors}
-                };
-            });
-        })
+        }
+        return error;
     }
 
-    handleInputChange = (e) => {
+    userUniqueness = async ({ field, value }) => {
+        const uniquenessError = await this.props.checkUserUniqueness({ field, value })
+            .then(res => res.json())
+            .then(response => {
+                let res = {};
+                if (response.error) {
+                    res = response.error;
+                } else {
+                    res[field] = '';
+                }
+                return res;
+            });
+        return uniquenessError;
+    }
+
+    handleInputChange = async (e) => {
         const field = e.target.name;
         const value = e.target.value;
+        let errors = {...this.state.errors};
+
+        const commonValidationError = await this.commonValidation(field, value);
+        let uniquenessError = {};
+        if ((field === 'username' || field === 'email') && value !== '') {
+            uniquenessError = await this.userUniqueness({ field, value });
+            errors = {...errors, [field]: commonValidationError[field] || uniquenessError[field] };
+        } else {
+            errors = {...errors, ...commonValidationError };
+        }
 
         this.setState((prevState) => {
             return {
@@ -105,32 +77,25 @@ class Signup extends Component {
                 userDetails: {
                     ...prevState.userDetails,
                     [field]: value
-                }
+                },
+                errors: {...errors}
             };
         });
-
-        this.handleValidation(field, value);
-
-        if ((field === 'username' || field === 'email') && value !== '') {
-            this.handleUserUniqueness({ field, value });
-        }
     }
 
     handleSignup = (e) => {
         e.preventDefault();
         let errors = {...this.state.errors};
-        if (Object.keys(errors).length > 0 ){
+        const userDetailsValid = Object.keys(errors).filter(field => errors[field] !== "").length === 0 ? true : false;
+        if (!userDetailsValid){
             return;
         }
         else {
-                this.props.userSignupRequest(this.state.userDetails)
-                .then(res => res.json())
-                .then(response => {
-                    if (response.errors) {
-                        errors = {...errors, ...response.errors};
-                    } else {
-                        this.props.history.push('/login');
-                    }
+            this.props.userSignupRequest(this.state.userDetails)
+            .then(res => res.json())
+            .then(response => {
+                if (response.errors) {
+                    errors = {...errors, ...response.errors};
                     this.setState(prevState => {
                         return {
                             ...prevState,
@@ -138,8 +103,11 @@ class Signup extends Component {
                             errors: {...errors}
                         };
                     });
-                })
-            }
+                } else {
+                    this.props.history.push('/login');
+                }
+            })
+        }
     }
 
     render() {    
@@ -164,13 +132,6 @@ class Signup extends Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        signupSuccessful: state.users.addedUser && state.users.errors === null,
-        signupErrors: state.users.signupErrors
-    };
-};
-
 const mapDispatchToProps = dispatch => {
     return {
         checkUserUniqueness: (userInputDetails) => dispatch(checkUserUniqueness(userInputDetails)),
@@ -178,4 +139,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Signup));
+export default withRouter(connect(null, mapDispatchToProps)(Signup));
