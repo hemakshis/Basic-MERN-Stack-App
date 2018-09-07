@@ -27,14 +27,14 @@ class Signup extends Component {
     commonValidation = (field, value) => {
         let error = {};
         if (value === '') {
-            error = { [field]: 'This field is required' }
+            error[field] = 'This field is required';
         } else {
             if (field === 'email' && !validateEmail(value)) {
-                error = { email: 'Not a valid Email' };
+                error[field] = 'Not a valid Email';
             } else if (field === 'password' && value.length < 4) {
-                error = { password: 'Password too short' };
+                error[field] = 'Password too short';
             } else if (field === 'confirmPassword' && value !== this.state.userDetails.password) {
-                error = { confirmPassword: 'Passwords do not match' }
+                error[field] = 'Passwords do not match';
             } else {
                 error[field] = '';
             }
