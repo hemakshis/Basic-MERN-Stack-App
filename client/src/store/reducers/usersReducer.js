@@ -1,10 +1,8 @@
 import * as actionTypes from '../actions/actionTypes'
 
 const initialState = {
-    loginSuccessful: false,
     isAuthenticated: false,
     authorizationToken: '',
-    loginErrors: {}
 };
 
 const reducer = (state = initialState, action) => {
@@ -12,15 +10,8 @@ const reducer = (state = initialState, action) => {
         case actionTypes.LOGIN_SUCCESSFUL:
             return {
                 ...state,
-                loginSuccessful: action.loginSuccessful,
-                isAuthenticated: action.loginSuccessful,
+                isAuthenticated: true,
                 authorizationToken: action.authorizationToken,
-                loginErrors: {}
-            }
-        case actionTypes.LOGIN_ERRORS:
-            return {
-                ...state,
-                loginErrors: action.errors
             }
         default:
             return state;

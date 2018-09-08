@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import { checkUserUniqueness, userSignupRequest } from '../../../store/actions/usersActions'
 import InputField from '../../../components/InputField/InputField';
 
@@ -123,7 +122,7 @@ class Signup extends Component {
                 <h3 className="text-center">Join Our Community!</h3>
                 <div className="jumbotron">
                     <form onSubmit={this.handleSignup}>
-                        {inputFields}
+                        { inputFields }
                         <button className="btn btn-primary">Sign Up</button>
                     </form>
                 </div>
@@ -139,4 +138,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchToProps)(Signup));
+export default connect(null, mapDispatchToProps)(Signup);

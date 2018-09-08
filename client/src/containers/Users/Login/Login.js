@@ -1,128 +1,94 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { userLoginRequest } from '../../../store/actions/usersActions';
-
 import InputField from '../../../components/InputField/InputField';
 
-class Login extends Component {
+const FIELDS = [
+    {name: 'username', type: 'text', label: 'Username'},
+    {name: 'password', type: 'password', label: 'Password'}
+];
 
+class Login extends Component {
     state = {
-        userDetails: {},
+        userCredentials: {},
         errors: {}
     }
 
-    componentDidUpdate() {
-        if (this.props.loginSuccessful) {
-            this.props.history.push('/');
-        }
-    }
-
     handleValidation = (field, value) => {
-        let errors = {...this.state.errors};
-
+        let error = {};
         if (value === '') {
-            errors = {
-                ...errors,
-                [field]: 'This field is required'
-            }
+            error[field] = 'This field is required';
         } else {
-            delete errors[field];
+            error[field] = '';
         }
-
-        if (Object.keys(errors).length !== 0) {
-            this.setState((prevState) => {
-                return {
-                    ...prevState,
-                    userDetails: {...prevState.userDetails},
-                    errors: {
-                        ...errors
-                    }
-                };
-            });
-        } else {
-            this.setState((prevState) => {
-                return {
-                    ...prevState,
-                    userDetails: {...prevState.userDetails},
-                    errors: {}
-                }; 
-            })
-        }
+        return error;
     }
 
     handleInputChange = (e) => {
         const field = e.target.name;
         const value = e.target.value;
-        
+
+        const errors = { ...this.state.errors, ...this.handleValidation(field, value) }
+        if (errors.invalidCredentials) {
+            delete errors.invalidCredentials;
+        }
+
         this.setState((prevState) => {
             return {
                 ...prevState,
-                userDetails: {
-                    ...prevState.userDetails,
+                userCredentials: {
+                    ...prevState.userCredentials,
                     [field]: value
-                }
+                },
+                errors: {...errors}
             };
         });
-
-        this.handleValidation(field, value);
     }
 
     handleLogin = (e) => {
         e.preventDefault();
-        if (Object.keys(this.state.errors).length !== 0){
+        let errors = {...this.state.errors};
+        const userCredentialsValid = Object.keys(errors).filter(field => errors[field] !== "").length === 0 ? true : false;
+        if ( !userCredentialsValid ) {
             return;
         } else {
-            let errors = {...this.state.errors};
-            if (! this.state.userDetails.username) {
-                errors = {
-                    ...errors,
-                    'username': 'This field is required'
+            this.props.userLoginRequest(this.state.userCredentials)
+            .then(response => {
+                if (response.errors) {
+                    this.setState(prevState => {
+                        return {
+                            ...prevState,
+                            userCredentials: {...prevState.userCredentials},
+                            errors: {...prevState.errors, ...response.errors}
+                        };
+                    });
+                } else {
+                    this.props.history.push('/');
                 }
-            }
-            if (! this.state.userDetails.password) {
-                errors = {
-                    ...errors,
-                    'password': 'This field is required'
-                }
-            }
-            if (Object.keys(errors).length !== 0) {
-                this.setState(prevState => {
-                    return {
-                        ...prevState,
-                        userDetails: {...prevState.userDetails},
-                        errors: {...prevState.errors, ...errors}
-                    }
-                });
-                return;
-            } else {
-                this.props.userLoginRequest(this.state.userDetails)
-                
-            }
+            })
         }
     }
 
     render() {
+        const inputFields = FIELDS.map(field =>
+            <InputField key={field.name}
+                        type={field.type} name={field.name} label={field.label}
+                        errors={this.state.errors}
+                        onChange={this.handleInputChange} />
+        )
         return (
             <div className="container">
                 <br />
                 <h3 className="text-center">Login</h3>
                 <div className="jumbotron">
-                    {this.props.errors.invalidCredentials && <p style={{color: 'red'}}>{this.props.errors.invalidCredentials}</p>}
+                    { this.state.errors.invalidCredentials && <p className="text-danger">{this.state.errors.invalidCredentials}</p> }
                     <form onSubmit={this.handleLogin}>
-                        <InputField type="text" name="username" label="Username" errors={this.state.errors} onChange={this.handleInputChange} />
-                        <InputField type="password" name="password" label="Password" errors={this.state.errors} onChange={this.handleInputChange} />
+                        { inputFields }
                         <button className="btn btn-primary">Login</button>
                     </form>
                 </div>
             </div>
         );
-    }
-}
-
-const mapStateToProps = state => {
-    return {
-        errors: state.users.loginErrors,
-        loginSuccessful: state.users.loginSuccessful
     }
 }
 
@@ -132,4 +98,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(null, mapDispatchToProps)(Login);

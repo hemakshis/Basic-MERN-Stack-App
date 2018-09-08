@@ -26,16 +26,16 @@ export const userSignupRequest = (userSignupDetails) => {
 
 export const userLoginRequest = (userLoginDetails) => {
     return dispatch => {
-        fetch(URL + '/users/login', options(userLoginDetails))
+        return fetch(URL + '/users/login', options(userLoginDetails))
         .then(res => res.json())
         .then(response => {
-            if (response.errors) {
-                dispatch({ type: actionTypes.LOGIN_ERRORS, errors: response.errors });
-            } else if (response.token) {
+            if (response.success) {
                 const token = response.token;
+                delete response.token;
                 localStorage.setItem('jwtToken', token);
-                dispatch({ type: actionTypes.LOGIN_SUCCESSFUL, loginSuccessful: true, authorizationToken: token })
+                dispatch({ type: actionTypes.LOGIN_SUCCESSFUL, authorizationToken: token });
             }
+            return response;
         })
     }   
 }
