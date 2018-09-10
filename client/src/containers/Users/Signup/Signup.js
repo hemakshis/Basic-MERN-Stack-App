@@ -44,14 +44,14 @@ class Signup extends Component {
     userUniqueness = async ({ field, value }) => {
         const uniquenessError = await this.props.checkUserUniqueness({ field, value })
             .then(res => res.json())
-            .then(response => {
-                let res = {};
-                if (response.error) {
-                    res = response.error;
+            .then(res => {
+                let result = {};
+                if (res.error) {
+                    result = res.error;
                 } else {
-                    res[field] = '';
+                    result[field] = '';
                 }
-                return res;
+                return result;
             });
         return uniquenessError;
     }
@@ -92,9 +92,9 @@ class Signup extends Component {
         else {
             this.props.userSignupRequest(this.state.userDetails)
             .then(res => res.json())
-            .then(response => {
-                if (response.errors) {
-                    errors = {...errors, ...response.errors};
+            .then(res => {
+                if (res.errors) {
+                    errors = {...errors, ...res.errors};
                     this.setState(prevState => {
                         return {
                             ...prevState,

@@ -53,13 +53,13 @@ class Login extends Component {
             return;
         } else {
             this.props.userLoginRequest(this.state.userCredentials)
-            .then(response => {
-                if (response.errors) {
+            .then(res => {
+                if (res.errors) {
                     this.setState(prevState => {
                         return {
                             ...prevState,
                             userCredentials: {...prevState.userCredentials},
-                            errors: {...prevState.errors, ...response.errors}
+                            errors: {...prevState.errors, ...res.errors}
                         };
                     });
                 } else {

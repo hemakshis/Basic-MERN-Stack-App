@@ -28,14 +28,14 @@ export const userLoginRequest = (userLoginDetails) => {
     return dispatch => {
         return fetch(URL + '/users/login', options(userLoginDetails))
         .then(res => res.json())
-        .then(response => {
-            if (response.success) {
-                const token = response.token;
-                delete response.token;
+        .then(res => {
+            if (res.success) {
+                const token = res.token;
+                delete res.token;
                 localStorage.setItem('jwtToken', token);
                 dispatch({ type: actionTypes.LOGIN_SUCCESSFUL, authorizationToken: token });
             }
-            return response;
+            return res;
         })
     }   
 }
