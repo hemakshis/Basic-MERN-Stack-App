@@ -35,12 +35,6 @@ export const submitNewArticle = (articleData) => {
     return dispatch => {
         return fetch(URL + '/articles/add', options(articleData))
         .then(res => res.json())
-        .then(res => {
-            if (res.success) {
-                dispatch({ type: actionTypes.SUBMITTED_NEW_ARTICLE, submitted: true })
-            }
-            return res;
-        })
     }
 };
 
@@ -48,21 +42,12 @@ export const saveArticle = (articleId, articleData) => {
     return dispatch => {
         return fetch(URL + '/articles/edit/' + articleId, options(articleData))
         .then(res => res.json())
-        .then(res => {
-            if (res.success) {
-                dispatch({ type: actionTypes.SAVED_ARTICLE, saved: true })
-            }
-            return res;
-        })
     }
 }
 
 export const deleteArticle = (articleId) => {
     return dispatch => {
-        fetch(URL + '/articles/delete/' + articleId, {method: 'delete'})
+        return fetch(URL + '/articles/delete/' + articleId, {method: 'delete'})
         .then(res => res.json())
-        .then(res => {
-            dispatch({ type: actionTypes.DELETED_ARTICLE, deleted: true })
-        })
     };
 }

@@ -2,10 +2,7 @@ import * as actionTypes from '../actions/actionTypes';
 
 const initialState = {
     articles: [],
-    article: {},
-    submittedNewArticle: false,
-    savedArticle: false,
-    deletedArticle: false
+    article: {}
 };
 
 const reducer = (state = initialState, action) => {
@@ -19,23 +16,6 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 article: action.article
-            };
-        case actionTypes.SUBMITTED_NEW_ARTICLE:
-            return {
-                ...state,
-                submittedNewArticle: true
-            };
-        case actionTypes.SAVED_ARTICLE:
-            return {
-                ...state,
-                savedArticle: true
-            };
-        case actionTypes.DELETED_ARTICLE:
-            return {
-                ...state,
-                deletedArticle: true,
-                submittedNewArticle: false,
-                savedArticle: false
             };
         default:
             return state;
