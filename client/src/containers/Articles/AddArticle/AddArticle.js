@@ -1,55 +1,73 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
 import { submitNewArticle } from '../../../store/actions/articlesActions';
+import ErrorMsg from '../../../components/ErrorMsg/ErrorMsg';
 
 class AddArticle extends Component {
-
     state = {
-        article: {
-            title: '',
-            author: '',
-            body: ''
-        }
+        article: {},
+        errors: {}
     };
 
+    handleValidation = (field, value) => {
+        let error = {};
+        if (value === '') {
+            error[field] = 'This field is required';
+        } else {
+            error[field] = '';
+        }
+        return error;
+    }
 
     handleInputChange = (e) => {
-        let article = {...this.state.article};
-        article = {
-            ...article,
-            [e.target.name]: e.target.value
-        };
-        this.setState({
-            article: article
+        const field = e.target.name;
+        const value = e.target.value;
+
+        const errors = { ...this.state.errors, ...this.handleValidation(field, value) }
+
+        this.setState((prevState) => {
+            return {
+                ...prevState,
+                article: {
+                    ...prevState.article,
+                    [field]: value
+                },
+                errors: {...errors}
+            };
         });
     }
 
-    handleAddArticleFormSubmit = (e) => {
+    handleNewArticleSubmit = (e) => {
         e.preventDefault();
-        const data = {
-            title: this.state.article.title,
-            author: this.state.article.author,
-            body: this.state.article.body
+        let errors = {...this.state.errors};
+        const formValuesValid = Object.keys(errors).filter(field => errors[field] !== "").length === 0 ? true : false;
+        if ( !formValuesValid ) {
+            return;
+        } else {
+            this.props.submitNewArticle(this.state.article)
+            .then(res => {
+                if (res.errors) {
+                    this.setState(prevState => {
+                        return {
+                            ...prevState,
+                            article: {...prevState.article},
+                            errors: {...prevState.errors, ...res.errors}
+                        };
+                    });
+                } else {
+                    this.props.history.push('/');
+                }
+            })
         }
-        this.props.submitNewArticle(data);
     }
 
     render() {
-        const redirect = this.props.submitted ? <Redirect to="/" /> : null;
-        const errors = this.props.errors ? <p>{this.props.errors}</p> : null;
-
-        if (redirect)
-            return redirect;
-        if (errors)
-            return errors;
-
         return (
             <div className="container">
                 <br />
                 <h3 className="text-center">Add Article</h3>
                 <div className="jumbotron">
-                    <form onSubmit={this.handleAddArticleFormSubmit}>
+                    <form onSubmit={this.handleNewArticleSubmit}>
                         <div className="form-group">
                             <label>Title</label>
                             <input
@@ -57,6 +75,7 @@ class AddArticle extends Component {
                                 className="form-control" placeholder="Title of your article"
                                 onChange={this.handleInputChange}
                                 defaultValue="" />
+                            {this.state.errors.title !== '' && <ErrorMsg msg={this.state.errors.title} />}
                         </div>
                         <div className="form-group">
                             <label>Author</label>
@@ -65,6 +84,7 @@ class AddArticle extends Component {
                                 className="form-control" placeholder="Your name"
                                 onChange={this.handleInputChange}
                                 defaultValue="" />
+                            {this.state.errors.author !== '' && <ErrorMsg msg={this.state.errors.author} />}
                         </div>
                         <div className="form-group">
                             <label>Body</label>
@@ -73,6 +93,7 @@ class AddArticle extends Component {
                                 className="form-control" placeholder="Your article's contents goes here... Good luck!"
                                 onChange={this.handleInputChange}
                                 defaultValue="" />
+                            {this.state.errors.body !== '' && <ErrorMsg msg={this.state.errors.body} />}
                         </div>
                         <button className="btn btn-success">Submit</button>
                     </form>
@@ -82,17 +103,10 @@ class AddArticle extends Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        submitted: state.articles.submittedNewArticle,
-        errors: state.articles.errorSubmittingNewArticle
-    };
-};
-
 const mapDispatchToProps = dispatch => {
     return {
         submitNewArticle: (articleData) => dispatch(submitNewArticle(articleData))
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddArticle);
+export default connect(null, mapDispatchToProps)(AddArticle);

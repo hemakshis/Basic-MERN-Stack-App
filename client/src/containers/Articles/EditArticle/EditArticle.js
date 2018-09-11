@@ -1,69 +1,111 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { saveArticle } from '../../../store/actions/articlesActions';
+import ErrorMsg from '../../../components/ErrorMsg/ErrorMsg';
 
 class EditArticle extends Component {
-
     state = {
-        article: {
-            title: '',
-            author: '',
-            body: ''
-        }
+        article: {},
+        errors: {}
     };
 
     componentWillMount() {
-        this.setState({
-            article: {
-                title: this.props.article.title,
-                author: this.props.article.author,
-                body: this.props.article.body
-            }
-        })
-    }
+        const articleId = this.props.match.params.id;
+        let article, errors;
+        if (localStorage.getItem('Edit' + articleId) === null ) {
+            localStorage.setItem('Edit' + articleId, JSON.stringify({ article: this.props.article, errors: {} }));
+            article = this.props.article;
+            errors = {};
+        } else {
+            article = JSON.parse(localStorage.getItem('Edit' + articleId)).article;
+            errors = JSON.parse(localStorage.getItem('Edit' + articleId)).errors;
+        }
 
-    handleInputChange = (e) => {
-        let article = {...this.state.article};
-        article = {
-            ...article,
-            [e.target.name]: e.target.value
-        };
-        this.setState({
-            article: article
+        this.setState(prevState => {
+            return {
+                ...prevState,
+                article: {...article},
+                errors: {...errors}
+            };
         });
     }
 
-    handleEditArticleFormSubmit = (e) => {
-        e.preventDefault();
-        const data = {
-            title: this.state.article.title,
-            author: this.state.article.author,
-            body: this.state.article.body
+    handleValidation = (field, value) => {
+        let error = {};
+        if (value === '') {
+            error[field] = 'This field is required';
+        } else {
+            error[field] = '';
         }
-        this.props.saveArticle(this.props.match.params.id, data);
+        return error;
+    }
+
+    handleInputChange = (e) => {
+        const field = e.target.name;
+        const value = e.target.value;
+
+        const errors = { ...this.state.errors, ...this.handleValidation(field, value) }
+        this.setState((prevState) => {
+            return {
+                ...prevState,
+                article: {
+                    ...prevState.article,
+                    [field]: value
+                },
+                errors: {...errors}
+            };
+        }, () => localStorage.setItem('Edit' + this.state.article._id, JSON.stringify(this.state)));
+    }
+
+    handleEditArticleSubmit = (e) => {
+        e.preventDefault();
+        let errors = {...this.state.errors};
+        const formValuesValid = Object.keys(errors).filter(field => errors[field] !== "").length === 0 ? true : false;
+        if ( !formValuesValid ) {
+            return;
+        } else {
+            this.props.saveArticle(this.props.match.params.id, this.state.article)
+            .then(res => {
+                if (res.errors) {
+                    this.setState(prevState => {
+                        return {
+                            ...prevState,
+                            article: {...prevState.article},
+                            errors: {...prevState.errors, ...res.errors}
+                        };
+                    });
+                } else {
+                    localStorage.removeItem('Edit' + this.props.match.params.id);
+                    this.props.history.push('/articles/' + this.props.match.params.id);
+                }
+            })
+        }
+    }
+
+    componentWillUnmount() {
+        localStorage.removeItem('Edit' + this.props.match.params.id);
     }
 
     render() {
-
-        if (this.props.saved)
-            return <Redirect to={"/articles/" + this.props.match.params.id} />;
-        if (this.props.errors)
-            return <p>{this.props.errors}</p>;
+        const defaultTitle = this.props.article.title || this.state.article.title;
+        const defaultAuthor = this.props.article.author || this.state.article.author;
+        const defaultBody = this.props.article.body || this.state.article.body;
 
         return (
             <div className="container">
                 <br />
-                <h3 className="text-center">Add Article</h3>
+                <h3 className="text-center">Edit Article</h3>
                 <div className="jumbotron">
-                    <form onSubmit={this.handleEditArticleFormSubmit}>
+                    <form onSubmit={this.handleEditArticleSubmit}>
                         <div className="form-group">
                             <label>Title</label>
                             <input
                                 name="title" type="text"
                                 className="form-control"
                                 onChange={this.handleInputChange}
-                                defaultValue={this.state.article.title} />
+                                defaultValue={defaultTitle} />
+                            {this.state.errors.title !== '' && <ErrorMsg msg={this.state.errors.title} />}
                         </div>
                         <div className="form-group">
                             <label>Author</label>
@@ -72,7 +114,7 @@ class EditArticle extends Component {
                                 name="author" type="text"
                                 className="form-control"
                                 onChange={this.handleInputChange}
-                                defaultValue={this.state.article.author} />
+                                defaultValue={defaultAuthor} />
 
                         </div>
                         <div className="form-group">
@@ -81,7 +123,8 @@ class EditArticle extends Component {
                                 name="body" style={{height: '200px'}}
                                 className="form-control"
                                 onChange={this.handleInputChange}
-                                defaultValue={this.state.article.body} />
+                                defaultValue={defaultBody} />
+                            {this.state.errors.body !== '' && <ErrorMsg msg={this.state.errors.body} />}
                         </div>
                         <button className="btn btn-success">Save</button>
                     </form>
@@ -93,9 +136,7 @@ class EditArticle extends Component {
 
 const mapStateToProps = state => {
     return {
-        article: state.articles.article,
-        saved: state.articles.savedArticle,
-        errors: state.articles.errorSavingArticle
+        article: state.articles.article
     };
 };
 
@@ -105,4 +146,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditArticle);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(EditArticle));

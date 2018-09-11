@@ -6,8 +6,7 @@ const wrappedLink = (props) => {
     return (
         <Link to={props.to} className="WrappedLink">
             <button
-                className={[...props.buttonClasses, "WrappedButton"].join(' ')}
-                onClick={props.click}>
+                className={[...props.buttonClasses, "WrappedButton"].join(' ')}>
                 {props.children}</button>
         </Link>
     );

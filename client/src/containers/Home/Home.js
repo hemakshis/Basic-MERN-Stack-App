@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getAllArticles } from '../../store/actions/articlesActions';
-import Articles from '../Articles/Articles';
+import Article from '../../components/Article/Article';
 import WrappedLink from '../../components/UI/WrappedLink/WrappedLink';
 import './Home.css';
 
@@ -12,6 +12,12 @@ class Home extends Component {
     }
 
     render() {
+        const articles = this.props.articles.map(article => (
+            <Article
+                key={article._id}
+                id={article._id}
+                title={article.title} />
+        ));
         return (
             <div className="container">
                 <br />
@@ -20,7 +26,13 @@ class Home extends Component {
                     <WrappedLink to="/article/add" buttonClasses={['btn', 'btn-primary', 'AddArticleButton']}>Add Article</WrappedLink>
                 </div>
                 <br />
-                <Articles articles={this.props.articles} />
+                <div>
+                    <section className="jumbotron">
+                        <div className="Articles">
+                            {articles}
+                        </div>
+                    </section>
+                </div>
             </div>
         );
     }
@@ -28,7 +40,7 @@ class Home extends Component {
 
 const mapStateToProps = state => {
     return {
-        articles: state.articles.allArticles,
+        articles: state.articles.articles,
         isAuthenticated: state.users.isAuthenticated
     };
 };

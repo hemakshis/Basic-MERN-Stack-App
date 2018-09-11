@@ -34,8 +34,8 @@ app.use(function(req,res,next){
 })
 
 app.get('/', (req, res) => {
-    Article.find({}, (err, data) => {
-        res.json(data);
+    Article.find({}, (err, articles) => {
+        res.json({ articles: articles });
     })
 });
 
