@@ -1,12 +1,10 @@
 import * as actionTypes from '../actions/actionTypes';
 
 const initialState = {
-    allArticles: [],
-    article: null,
+    articles: [],
+    article: {},
     submittedNewArticle: false,
-    errorSubmittingNewArticle: null,
     savedArticle: false,
-    errorSavingArticle: null,
     deletedArticle: false
 };
 
@@ -15,42 +13,22 @@ const reducer = (state = initialState, action) => {
         case actionTypes.GOT_ALL_ARTICLES:
             return {
                 ...state,
-                allArticles: action.articles,
-                submittedNewArticle: false,
-                errorSubmittingNewArticle: null,
-                deletedArticle: false
+                articles: action.articles
             };
         case actionTypes.GOT_SINGLE_ARTICLE:
             return {
                 ...state,
-                article: action.article,
-                deletedArticle: false,
-                savedArticle: false,
-                errorSavingArticle: null
+                article: action.article
             };
         case actionTypes.SUBMITTED_NEW_ARTICLE:
             return {
                 ...state,
-                submittedNewArticle: true,
-                errorSubmittingNewArticle: null
-            };
-        case actionTypes.ERROR_SUBMITTING_NEW_ARTICLE:
-            return {
-                ...state,
-                submittedNewArticle: false,
-                errorSubmittingNewArticle: action.error
+                submittedNewArticle: true
             };
         case actionTypes.SAVED_ARTICLE:
             return {
                 ...state,
-                savedArticle: true,
-                errorSavingArticle: null
-            };
-        case actionTypes.ERROR_SAVING_ARTICLE:
-            return {
-                ...state,
-                savedArticle: false,
-                errorSavingArticle: action.error
+                savedArticle: true
             };
         case actionTypes.DELETED_ARTICLE:
             return {

@@ -8,8 +8,7 @@ const article = (props) => {
             <strong>{props.title}</strong>
             <WrappedLink
                 to={'/articles/' + props.id}
-                buttonClasses={['btn', 'btn-info', 'ViewButton']}
-                click={props.click}>View</WrappedLink>
+                buttonClasses={['btn', 'btn-info', 'ViewButton']}>View</WrappedLink>
         </li>
     );
 }

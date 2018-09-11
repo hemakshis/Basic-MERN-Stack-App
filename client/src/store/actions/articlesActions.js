@@ -11,105 +11,48 @@ const options = (data) => {
     };
 };
 
-const allArticlesReceivedSuccessfully = (articles) => {
-    return {
-        type: actionTypes.GOT_ALL_ARTICLES,
-        articles: articles
-    };
-};
-
-const articleReceivedSuccessfully = (article) => {
-    return {
-        type: actionTypes.GOT_SINGLE_ARTICLE,
-        article: article
-    };
-};
-
-const newArticleSubmittedSuccessfully = () => {
-    return {
-        type: actionTypes.SUBMITTED_NEW_ARTICLE,
-        submitted: true
-    };
-};
-
-const errorSubmittingNewArticle = (err) => {
-    return {
-        type: actionTypes.ERROR_SUBMITTING_NEW_ARTICLE,
-        error: err
-    };
-};
-const articleSavedSuccessfully = () => {
-    return {
-        type: actionTypes.SAVED_ARTICLE,
-        saved: true
-    };
-};
-
-const errorSavingArticle = (err) => {
-    return {
-        type: actionTypes.ERROR_SAVING_ARTICLE,
-        error: err
-    };
-};
-
-const deletedArticleSuccessfully = (articleId) => {
-    return {
-        type: actionTypes.DELETED_ARTICLE,
-        articleId: articleId,
-        deleted: true
-    };
-};
-
 export const getAllArticles = () => {
     return dispatch => {
-        return (
-            fetch(URL + '/')
-                .then(res => res.json())
-                .then(data => {
-                    dispatch(allArticlesReceivedSuccessfully(data))
-                })
-        );
+        fetch(URL + '/')
+        .then(res => res.json())
+        .then(res => {
+            dispatch({ type: actionTypes.GOT_ALL_ARTICLES, articles: res.articles })
+        })
     };
 };
 
 export const getArticle = (articleId) => {
     return dispatch => {
-        return (
-            fetch(URL + '/articles/' + articleId)
-            .then(res => res.json())
-            .then(data => {
-                dispatch(articleReceivedSuccessfully(data))
-            })
-        );
+        fetch(URL + '/articles/' + articleId)
+        .then(res => res.json())
+        .then(res => {
+            dispatch({ type: actionTypes.GOT_SINGLE_ARTICLE, article: res.article })
+        })
     };
 };
 
 export const submitNewArticle = (articleData) => {
     return dispatch => {
-        return (
-            fetch(URL + '/articles/add', options(articleData))
-            .then(res => {
-                if (res.ok) {
-                    dispatch(newArticleSubmittedSuccessfully())
-                } else {
-                    let error = new Error(res.statusText);
-                    dispatch(errorSubmittingNewArticle(error))
-                }
-            })
-        );
+        return fetch(URL + '/articles/add', options(articleData))
+        .then(res => res.json())
+        .then(res => {
+            if (res.success) {
+                dispatch({ type: actionTypes.SUBMITTED_NEW_ARTICLE, submitted: true })
+            }
+            return res;
+        })
     }
 };
 
 export const saveArticle = (articleId, articleData) => {
     return dispatch => {
-        fetch(URL + '/articles/edit/' + articleId, options(articleData))
+        return fetch(URL + '/articles/edit/' + articleId, options(articleData))
+        .then(res => res.json())
         .then(res => {
-            if (res.ok) {
-                dispatch(articleSavedSuccessfully())
-            } else {
-                let error = new Error(res.statusText);
-                dispatch(errorSavingArticle(error));
+            if (res.success) {
+                dispatch({ type: actionTypes.SAVED_ARTICLE, saved: true })
             }
+            return res;
         })
     }
 }
@@ -117,8 +60,9 @@ export const saveArticle = (articleId, articleData) => {
 export const deleteArticle = (articleId) => {
     return dispatch => {
         fetch(URL + '/articles/delete/' + articleId, {method: 'delete'})
-            .then(res => {
-                dispatch(deletedArticleSuccessfully(articleId))
-            })
+        .then(res => res.json())
+        .then(res => {
+            dispatch({ type: actionTypes.DELETED_ARTICLE, deleted: true })
+        })
     };
 }
