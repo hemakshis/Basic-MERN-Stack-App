@@ -2,12 +2,31 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { submitNewArticle } from '../../../store/actions/articlesActions';
 import ErrorMsg from '../../../components/ErrorMsg/ErrorMsg';
+import InputField from '../../../components/InputField/InputField';
+
+const FIELDS = [
+    {name: 'title', type: 'text', label: 'Title'},
+    {name: 'author', type: 'text', label: 'Author'}
+];
 
 class AddArticle extends Component {
     state = {
         article: {},
         errors: {}
     };
+
+    componentWillMount() {
+        if (localStorage.getItem('AddArticlePage') !== null ) {
+            const { article, errors } = JSON.parse(localStorage.getItem('AddArticlePage'));
+            this.setState(prevState => {
+                return {
+                    ...prevState,
+                    article: {...article},
+                    errors: {...errors}
+                };
+            });
+        }
+    }
 
     handleValidation = (field, value) => {
         let error = {};
@@ -34,7 +53,11 @@ class AddArticle extends Component {
                 },
                 errors: {...errors}
             };
-        });
+        }, () => localStorage.setItem('AddArticlePage', JSON.stringify(this.state)));
+    }
+
+    componentWillUnmount() {
+        localStorage.removeItem('AddArticlePage');
     }
 
     handleNewArticleSubmit = (e) => {
@@ -62,37 +85,27 @@ class AddArticle extends Component {
     }
 
     render() {
+        const inputFields = FIELDS.map(field =>
+            <InputField key={field.name}
+                        type={field.type} name={field.name} label={field.label}
+                        defaultValue={this.state.article[field.name]}
+                        errors={this.state.errors}
+                        onChange={this.handleInputChange} />
+        )
         return (
             <div className="container">
                 <br />
                 <h3 className="text-center">Add Article</h3>
                 <div className="jumbotron">
                     <form onSubmit={this.handleNewArticleSubmit}>
-                        <div className="form-group">
-                            <label>Title</label>
-                            <input
-                                name="title" type="text"
-                                className="form-control" placeholder="Title of your article"
-                                onChange={this.handleInputChange}
-                                defaultValue="" />
-                            {this.state.errors.title !== '' && <ErrorMsg msg={this.state.errors.title} />}
-                        </div>
-                        <div className="form-group">
-                            <label>Author</label>
-                            <input
-                                name="author" type="text"
-                                className="form-control" placeholder="Your name"
-                                onChange={this.handleInputChange}
-                                defaultValue="" />
-                            {this.state.errors.author !== '' && <ErrorMsg msg={this.state.errors.author} />}
-                        </div>
+                        {inputFields}
                         <div className="form-group">
                             <label>Body</label>
                             <textarea
                                 name="body" style={{height: '200px'}}
                                 className="form-control" placeholder="Your article's contents goes here... Good luck!"
                                 onChange={this.handleInputChange}
-                                defaultValue="" />
+                                defaultValue={this.state.article.body} />
                             {this.state.errors.body !== '' && <ErrorMsg msg={this.state.errors.body} />}
                         </div>
                         <button className="btn btn-success">Submit</button>

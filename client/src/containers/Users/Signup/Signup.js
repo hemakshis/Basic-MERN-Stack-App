@@ -23,6 +23,19 @@ class Signup extends Component {
         errors: {}
     };
 
+    componentWillMount() {
+        if (localStorage.getItem('SignupPage') !== null ) {
+            const { userDetails, errors } = JSON.parse(localStorage.getItem('SignupPage'));
+            this.setState(prevState => {
+                return {
+                    ...prevState,
+                    userDetails: {...userDetails},
+                    errors: {...errors}
+                };
+            });
+        }
+    }
+
     commonValidation = (field, value) => {
         let error = {};
         if (value === '') {
@@ -79,7 +92,7 @@ class Signup extends Component {
                 },
                 errors: {...errors}
             };
-        });
+        }, () => localStorage.setItem('SignupPage', JSON.stringify(this.state)));
     }
 
     handleSignup = (e) => {
@@ -103,16 +116,22 @@ class Signup extends Component {
                         };
                     });
                 } else {
+                    localStorage.removeItem('SignupPage');
                     this.props.history.push('/login');
                 }
             })
         }
     }
 
-    render() {    
+    componentWillUnmount() {
+        localStorage.removeItem('SignupPage');
+    }
+
+    render() {
         const inputFields = FIELDS.map(field =>
             <InputField key={field.name}
                         type={field.type} name={field.name} label={field.label}
+                        defaultValue={this.state.userDetails[field.name]}
                         errors={this.state.errors}
                         onChange={this.handleInputChange} />
         )

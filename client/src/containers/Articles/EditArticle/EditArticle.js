@@ -3,6 +3,12 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { saveArticle } from '../../../store/actions/articlesActions';
 import ErrorMsg from '../../../components/ErrorMsg/ErrorMsg';
+import InputField from '../../../components/InputField/InputField';
+
+const FIELDS = [
+    {name: 'title', type: 'text', label: 'Title'},
+    {name: 'author', type: 'text', label: 'Author', disabled: 'disabled'}
+];
 
 class EditArticle extends Component {
     state = {
@@ -88,42 +94,27 @@ class EditArticle extends Component {
     }
 
     render() {
-        const defaultTitle = this.props.article.title || this.state.article.title;
-        const defaultAuthor = this.props.article.author || this.state.article.author;
-        const defaultBody = this.props.article.body || this.state.article.body;
-
+        const inputFields = FIELDS.map(field =>
+            <InputField key={field.name}
+                        type={field.type} name={field.name} label={field.label}
+                        defaultValue={this.state.article[field.name]} disabled={field.disabled}
+                        errors={this.state.errors}
+                        onChange={this.handleInputChange} />
+        );
         return (
             <div className="container">
                 <br />
                 <h3 className="text-center">Edit Article</h3>
                 <div className="jumbotron">
                     <form onSubmit={this.handleEditArticleSubmit}>
-                        <div className="form-group">
-                            <label>Title</label>
-                            <input
-                                name="title" type="text"
-                                className="form-control"
-                                onChange={this.handleInputChange}
-                                defaultValue={defaultTitle} />
-                            {this.state.errors.title !== '' && <ErrorMsg msg={this.state.errors.title} />}
-                        </div>
-                        <div className="form-group">
-                            <label>Author</label>
-                            <input
-                                disabled
-                                name="author" type="text"
-                                className="form-control"
-                                onChange={this.handleInputChange}
-                                defaultValue={defaultAuthor} />
-
-                        </div>
+                        {inputFields}
                         <div className="form-group">
                             <label>Body</label>
                             <textarea
                                 name="body" style={{height: '200px'}}
                                 className="form-control"
                                 onChange={this.handleInputChange}
-                                defaultValue={defaultBody} />
+                                defaultValue={this.state.article.body} />
                             {this.state.errors.body !== '' && <ErrorMsg msg={this.state.errors.body} />}
                         </div>
                         <button className="btn btn-success">Save</button>
