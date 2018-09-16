@@ -1,9 +1,21 @@
 import * as actionTypes from '../actions/actionTypes'
 import jwt from 'jsonwebtoken';
 
+const validCredentials = () => {
+    const authorizationToken = localStorage.getItem('jwtToken');
+    if (authorizationToken === null)
+        return false;
+    try {
+        jwt.decode(authorizationToken);
+        return true;
+    } catch(err) {
+        return false;
+    }
+}
+
 const initialState = {
-    isAuthenticated: localStorage.getItem('jwtToken') === null ? false : true,
-    authenticatedUsername: localStorage.getItem('jwtToken') === null ? '' : jwt.decode(localStorage.getItem('jwtToken')).username,
+    isAuthenticated: validCredentials(),
+    authenticatedUsername: validCredentials() === false ? '' : jwt.decode(localStorage.getItem('jwtToken')).username
 };
 
 const reducer = (state = initialState, action) => {

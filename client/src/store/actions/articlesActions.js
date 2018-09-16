@@ -4,6 +4,7 @@ const URL = "http://localhost:5000";
 const options = (data) => {
     return {
         headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('jwtToken'),
             'Content-Type': 'application/json'
         },
         method: 'post',
@@ -47,7 +48,13 @@ export const saveArticle = (articleId, articleData) => {
 
 export const deleteArticle = (articleId) => {
     return dispatch => {
-        return fetch(URL + '/articles/delete/' + articleId, {method: 'delete'})
+        return fetch(URL + '/articles/delete/' + articleId, {
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('jwtToken'),
+                'Content-Type': 'application/json'
+            },
+            method: 'delete'
+        })
         .then(res => res.json())
     };
 }

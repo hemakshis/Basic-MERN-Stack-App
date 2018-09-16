@@ -1,5 +1,7 @@
 import express from 'express';
 import Article from '../models/articlesModel.js';
+import jwt from 'jsonwebtoken';
+import config from '../config.js';
 
 let router = express.Router();
 
@@ -23,6 +25,22 @@ const checkForErrors = ({ title, author, body }) => {
     return { isValid, errors };
 }
 
+const isAuthenticated = (req, res, next) => {
+    const authorizationHeader = req.headers['authorization'];
+    const authorizationToken = authorizationHeader.split(' ')[1];
+    if (authorizationToken) {
+        jwt.verify(authorizationToken, config.jwtSecret, (err, decoded) => {
+            if (err) {
+                res.status(401).json({ error: 'Failed to authenticate' });
+            } else {
+                next();
+            }
+        });
+    } else {
+        res.status(403).json({ error: 'No token provided' })
+    }
+}
+
 router.get('/:id', (req, res) => {
     Article.findById(req.params.id, (err, article) => {
         if (err) throw err;
@@ -30,7 +48,7 @@ router.get('/:id', (req, res) => {
     })
 })
 
-router.post('/add', (req, res) => {
+router.post('/add', isAuthenticated, (req, res) => {
     const title = req.body.title || '';
     const author = req.body.author || '';
     const body = req.body.body || '';
@@ -55,13 +73,13 @@ router.post('/add', (req, res) => {
     }
 });
 
-router.post('/edit/:id', (req, res) => {
+router.post('/edit/:id', isAuthenticated, (req, res) => {
     const title = req.body.title || '';
     const author = req.body.author || '';
     const body = req.body.body || '';
 
     const { isValid, errors } = checkForErrors({ title, author, body });
-    
+
     if (isValid) {
         const updatedArticle = {
             title: req.body.title,
@@ -78,7 +96,7 @@ router.post('/edit/:id', (req, res) => {
     }
 });
 
-router.delete('/delete/:id', (req, res) => {
+router.delete('/delete/:id', isAuthenticated, (req, res) => {
     Article.remove({_id: req.params.id}, err => {
         res.json({ success: 'success' });
     });

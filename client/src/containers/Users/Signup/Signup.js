@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import { checkUserUniqueness, userSignupRequest } from '../../../store/actions/usersActions'
 import InputField from '../../../components/InputField/InputField';
 
@@ -128,6 +129,9 @@ class Signup extends Component {
     }
 
     render() {
+        if (this.props.isAuthenticated) {
+            return <Redirect to="/" />;
+        }
         const inputFields = FIELDS.map(field =>
             <InputField key={field.name}
                         type={field.type} name={field.name} label={field.label}
@@ -150,6 +154,12 @@ class Signup extends Component {
     }
 }
 
+const mapStateToProps = state => {
+    return {
+        isAuthenticated: state.users.isAuthenticated
+    }
+}
+
 const mapDispatchToProps = dispatch => {
     return {
         checkUserUniqueness: (userInputDetails) => dispatch(checkUserUniqueness(userInputDetails)),
@@ -157,4 +167,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(null, mapDispatchToProps)(Signup);
+export default connect(mapStateToProps, mapDispatchToProps)(Signup);

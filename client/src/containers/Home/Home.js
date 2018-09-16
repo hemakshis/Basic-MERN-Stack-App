@@ -23,7 +23,7 @@ class Home extends Component {
                 <br />
                 <div className="Header">
                     <h1 style={{display: 'inline-block'}}>All Articles</h1>
-                    <WrappedLink to={this.props.isAuthenticated ? "/article/add" : "/login"} buttonClasses={['btn', 'btn-primary', 'AddArticleButton']}>Add Article</WrappedLink>
+                    <WrappedLink to="/article/add" buttonClasses={['btn', 'btn-primary', 'AddArticleButton']}>Add Article</WrappedLink>
                 </div>
                 <br />
                 <div>
