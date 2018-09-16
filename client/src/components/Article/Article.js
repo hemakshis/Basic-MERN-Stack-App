@@ -1,6 +1,6 @@
 import React from 'react';
 import './Article.css';
-import WrappedLink from '../UI/WrappedLink/WrappedLink';
+import WrappedLink from '../WrappedLink/WrappedLink';
 
 const article = (props) => {
     return (

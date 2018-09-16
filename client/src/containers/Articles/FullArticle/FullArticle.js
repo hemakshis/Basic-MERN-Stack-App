@@ -2,11 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom'
 import { getArticle, deleteArticle } from '../../../store/actions/articlesActions';
-import WrappedLink from '../../../components/UI/WrappedLink/WrappedLink';
+import WrappedLink from '../../../components/WrappedLink/WrappedLink';
 import './FullArticle.css'
 
 class FullArticle extends Component {
-
     componentDidMount() {
         this.getSingleArticle();
     }
@@ -41,14 +40,16 @@ class FullArticle extends Component {
                     <h3 className="text-center">{this.props.article.title}</h3>
                     <h5 className="text-right">- By {this.props.article.author}</h5>
                     <p>{this.props.article.body}</p>
-                    <button
+                    {this.props.isAuthenticated && this.props.authenticatedUsername === this.props.article.author
+                    && <button
                         className="btn btn-danger"
                         style={{float: 'right', padding: '6px 12px'}}
-                        onClick={() => this.handleDeleteArticleClick()}>Delete</button>
-                    <WrappedLink
+                        onClick={() => this.handleDeleteArticleClick()}>Delete</button>}
+                    {this.props.isAuthenticated && this.props.authenticatedUsername === this.props.article.author
+                    && <WrappedLink
                         to={"/article/edit/" + this.props.match.params.id}
                         buttonClasses={['btn', 'btn-info', 'mr-2']}
-                        click={() => this.handleEditArticleClick()}>Edit</WrappedLink>
+                        click={() => this.handleEditArticleClick()}>Edit</WrappedLink>}
                 </div>
             </div>
         );
@@ -57,7 +58,9 @@ class FullArticle extends Component {
 
 const mapStateToProps = state => {
     return {
-        article: state.articles.article
+        article: state.articles.article,
+        isAuthenticated: state.users.isAuthenticated,
+        authenticatedUsername: state.users.authenticatedUsername
     };
 };
 

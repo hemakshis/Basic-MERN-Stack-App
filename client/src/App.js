@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
 
-import './App.css';
 import Home from './containers/Home/Home';
 import Signup from './containers/Users/Signup/Signup';
 import Login from './containers/Users/Login/Login';
 import FullArticle from './containers/Articles/FullArticle/FullArticle';
 import AddArticle from './containers/Articles/AddArticle/AddArticle';
 import EditArticle from './containers/Articles/EditArticle/EditArticle';
-import NavigationBar from './components/UI/NavigationBar/NavigationBar';
+import NavigationBar from './containers/NavigationBar/NavigationBar';
 
 class App extends Component {
     render() {

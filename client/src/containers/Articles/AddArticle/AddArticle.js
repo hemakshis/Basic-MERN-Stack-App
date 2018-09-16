@@ -6,7 +6,7 @@ import InputField from '../../../components/InputField/InputField';
 
 const FIELDS = [
     {name: 'title', type: 'text', label: 'Title'},
-    {name: 'author', type: 'text', label: 'Author'}
+    {name: 'author', type: 'text', label: 'Author', disabled: 'disabled'}
 ];
 
 class AddArticle extends Component {
@@ -67,7 +67,7 @@ class AddArticle extends Component {
         if ( !formValuesValid ) {
             return;
         } else {
-            this.props.submitNewArticle(this.state.article)
+            this.props.submitNewArticle({...this.state.article, author: this.props.authenticatedUsername})
             .then(res => {
                 if (res.errors) {
                     this.setState(prevState => {
@@ -85,20 +85,22 @@ class AddArticle extends Component {
     }
 
     render() {
-        const inputFields = FIELDS.map(field =>
-            <InputField key={field.name}
-                        type={field.type} name={field.name} label={field.label}
-                        defaultValue={this.state.article[field.name]}
-                        errors={this.state.errors}
-                        onChange={this.handleInputChange} />
-        )
         return (
             <div className="container">
                 <br />
                 <h3 className="text-center">Add Article</h3>
                 <div className="jumbotron">
                     <form onSubmit={this.handleNewArticleSubmit}>
-                        {inputFields}
+                        <InputField key={FIELDS[0].name}
+                            type={FIELDS[0].type} name={FIELDS[0].name} label={FIELDS[0].label}
+                            defaultValue={this.state.article.title}
+                            errors={this.state.errors}
+                            onChange={this.handleInputChange} />
+                        <InputField key={FIELDS[1].name}
+                            type={FIELDS[1].type} name={FIELDS[1].name} label={FIELDS[1].label}
+                            defaultValue={this.props.authenticatedUsername} disabled={FIELDS[1].disabled}
+                            errors={this.state.errors}
+                            onChange={this.handleInputChange} />
                         <div className="form-group">
                             <label>Body</label>
                             <textarea
@@ -116,10 +118,16 @@ class AddArticle extends Component {
     }
 }
 
+const mapStateToProps = state => {
+    return {
+        authenticatedUsername: state.users.authenticatedUsername
+    };
+}
+
 const mapDispatchToProps = dispatch => {
     return {
         submitNewArticle: (articleData) => dispatch(submitNewArticle(articleData))
     };
 };
 
-export default connect(null, mapDispatchToProps)(AddArticle);
+export default connect(mapStateToProps, mapDispatchToProps)(AddArticle);

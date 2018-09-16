@@ -1,5 +1,5 @@
 import * as actionTypes from './actionTypes'
-// import jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 
 const URL = "http://localhost:5000";
 const options = data => {
@@ -33,9 +33,16 @@ export const userLoginRequest = (userLoginDetails) => {
                 const token = res.token;
                 delete res.token;
                 localStorage.setItem('jwtToken', token);
-                dispatch({ type: actionTypes.LOGIN_SUCCESSFUL, authorizationToken: token });
+                dispatch({ type: actionTypes.LOGIN_SUCCESSFUL, authorizationToken: token, authenticatedUsername: jwt.decode(token).username });
             }
             return res;
         })
     }   
+}
+
+export const userLogoutRequest = () => {
+    return dispatch => {
+        localStorage.removeItem('jwtToken');
+        dispatch({ type: actionTypes.LOGOUT_USER });
+    }
 }

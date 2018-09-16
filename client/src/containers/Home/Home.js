@@ -2,11 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getAllArticles } from '../../store/actions/articlesActions';
 import Article from '../../components/Article/Article';
-import WrappedLink from '../../components/UI/WrappedLink/WrappedLink';
+import WrappedLink from '../../components/WrappedLink/WrappedLink';
 import './Home.css';
 
 class Home extends Component {
-
     componentDidMount() {
         this.props.initArticles();
     }
@@ -18,12 +17,13 @@ class Home extends Component {
                 id={article._id}
                 title={article.title} />
         ));
+
         return (
             <div className="container">
                 <br />
                 <div className="Header">
                     <h1 style={{display: 'inline-block'}}>All Articles</h1>
-                    <WrappedLink to="/article/add" buttonClasses={['btn', 'btn-primary', 'AddArticleButton']}>Add Article</WrappedLink>
+                    <WrappedLink to={this.props.isAuthenticated ? "/article/add" : "/login"} buttonClasses={['btn', 'btn-primary', 'AddArticleButton']}>Add Article</WrappedLink>
                 </div>
                 <br />
                 <div>
