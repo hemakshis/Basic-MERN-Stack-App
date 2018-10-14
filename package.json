@@ -4,11 +4,7 @@
     "description": "A Basic MERN Stack App just for practice",
     "main": "app.js",
     "scripts": {
-        "start": "node app.js",
-        "client-server": "npm start --prefix client",
         "client": "cd client && npm start",
-        "server": "node app.js",
-        "dev": "concurrently \"npm run server\" \"npm run client\"",
         "start-babel": "babel-node --presets es2015 app.js"
     },
     "author": "Hemakshi Sachdev",
