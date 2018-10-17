@@ -1,7 +1,8 @@
-import express from 'express';
-import Article from '../models/articlesModel.js';
-import jwt from 'jsonwebtoken';
-import config from '../config.js';
+const express = require('express');
+const jwt = require('jsonwebtoken');
+
+const Article = require('../models/articlesModel.js');
+const config = require('../config.js');
 
 let router = express.Router();
 
@@ -44,7 +45,7 @@ const isAuthenticated = (req, res, next) => {
 router.get('/:id', (req, res) => {
     Article.findById(req.params.id, (err, article) => {
         if (err) throw err;
-        res.json({ article: article });
+        res.json({ article });
     })
 })
 
@@ -69,7 +70,7 @@ router.post('/add', isAuthenticated, (req, res) => {
             }
         });
     } else {
-        res.json({ errors: errors });
+        res.json({ errors });
     }
 });
 
@@ -92,7 +93,7 @@ router.post('/edit/:id', isAuthenticated, (req, res) => {
             else res.json({ success: 'success' });
         });
     } else {
-        res.json({ errors: errors });
+        res.json({ errors });
     }
 });
 
@@ -102,4 +103,4 @@ router.delete('/delete/:id', isAuthenticated, (req, res) => {
     });
 });
 
-export default router;
+module.exports = router;
