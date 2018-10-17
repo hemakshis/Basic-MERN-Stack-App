@@ -4,6 +4,7 @@
     "description": "A Basic MERN Stack App just for practice",
     "main": "app.js",
     "scripts": {
+        "start": "node app.js",
         "client": "cd client && yarn start",
         "server": "nodemon app.js"
     },
