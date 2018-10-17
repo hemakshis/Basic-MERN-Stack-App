@@ -47,8 +47,8 @@ app.get('/articles', (req, res) => {
 app.use('/articles', articles);
 app.use('/users', users);
 
-app.use((req, res) => {
-    res.sendFile(path.join(__dirname, './client/build/index.html'));
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '/client/build/index.html'));
 });
 
 app.listen(PORT, () => {
