@@ -9,7 +9,7 @@ import { createStore, applyMiddleware, combineReducers } from 'redux';
 import articlesReducer from './store/reducers/articlesReducer';
 import usersReducer from './store/reducers/usersReducer';
 
-import registerServiceWorker from './registerServiceWorker';
+// import registerServiceWorker from './registerServiceWorker';
 
 const rootReducer = combineReducers({
     articles: articlesReducer,
@@ -28,4 +28,4 @@ const app = (
 
 
 ReactDOM.render(app, document.getElementById('root'));
-registerServiceWorker();
+// registerServiceWorker();
