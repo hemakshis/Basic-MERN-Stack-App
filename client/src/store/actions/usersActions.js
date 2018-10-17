@@ -1,7 +1,7 @@
 import * as actionTypes from './actionTypes'
 import jwt from 'jsonwebtoken';
 
-const URL = "http://localhost:5000";
+const URL = "https://bmernapp.herokuapp.com";
 const options = data => {
     return {
         headers: {
