@@ -5,7 +5,8 @@ const options = (data) => {
     return {
         headers: {
             'Authorization': 'Bearer ' + localStorage.getItem('jwtToken'),
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
         },
         method: 'post',
         body: JSON.stringify(data)
@@ -14,9 +15,10 @@ const options = (data) => {
 
 export const getAllArticles = () => {
     return dispatch => {
-        fetch(URL + '/')
+        fetch(URL + '/articles')
         .then(res => res.json())
         .then(res => {
+            localStorage.setItem('BasicMERNStackAppAllArticles', JSON.stringify(res.articles));
             dispatch({ type: actionTypes.GOT_ALL_ARTICLES, articles: res.articles })
         })
     };

@@ -11,7 +11,8 @@ class Home extends Component {
     }
 
     render() {
-        const articles = this.props.articles.map(article => (
+        let articles = this.props.articles || JSON.parse(localStorage.getItem('BasicMERNStackAppAllArticles'));
+        articles = this.props.articles.map(article => (
             <Article
                 key={article._id}
                 id={article._id}

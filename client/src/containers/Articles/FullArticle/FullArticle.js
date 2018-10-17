@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom'
 import { getArticle, deleteArticle } from '../../../store/actions/articlesActions';
 import WrappedLink from '../../../components/WrappedLink/WrappedLink';
 import './FullArticle.css'
