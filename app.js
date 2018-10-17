@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const path = require('path');
+require('dotenv').config();
 
 const Article = require('./models/articlesModel.js');
 const articles = require('./routes/articlesRoute.js');
@@ -10,7 +11,6 @@ const config = require('./config.js');
 
 const MONGODB_URI = config.mongodburi || 'mongodb://localhost:27017/basic-mern-app';
 const PORT = process.env.PORT || 5000;
-
 
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 mongoose.connection.on('connected', () => {

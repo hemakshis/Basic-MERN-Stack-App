@@ -1,6 +1,5 @@
 import * as actionTypes from './actionTypes';
 
-const URL = "https://bmernapp.herokuapp.com";
 const options = (data) => {
     return {
         headers: {
@@ -15,7 +14,7 @@ const options = (data) => {
 
 export const getAllArticles = () => {
     return dispatch => {
-        fetch(URL + '/articles')
+        fetch('/articles')
         .then(res => res.json())
         .then(res => {
             localStorage.setItem('BasicMERNStackAppAllArticles', JSON.stringify(res.articles));
@@ -26,7 +25,7 @@ export const getAllArticles = () => {
 
 export const getArticle = (articleId) => {
     return dispatch => {
-        fetch(URL + '/articles/' + articleId)
+        fetch('/articles/' + articleId)
         .then(res => res.json())
         .then(res => {
             dispatch({ type: actionTypes.GOT_SINGLE_ARTICLE, article: res.article })
@@ -36,21 +35,21 @@ export const getArticle = (articleId) => {
 
 export const submitNewArticle = (articleData) => {
     return dispatch => {
-        return fetch(URL + '/articles/add', options(articleData))
+        return fetch('/articles/add', options(articleData))
         .then(res => res.json())
     }
 };
 
 export const saveArticle = (articleId, articleData) => {
     return dispatch => {
-        return fetch(URL + '/articles/edit/' + articleId, options(articleData))
+        return fetch('/articles/edit/' + articleId, options(articleData))
         .then(res => res.json())
     }
 }
 
 export const deleteArticle = (articleId) => {
     return dispatch => {
-        return fetch(URL + '/articles/delete/' + articleId, {
+        return fetch('/articles/delete/' + articleId, {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('jwtToken'),
                 'Content-Type': 'application/json'
