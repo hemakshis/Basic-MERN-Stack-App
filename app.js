@@ -38,14 +38,8 @@ app.use((req, res, next) => {
      next();
 });
 
-app.get('/articles', (req, res) => {
-    Article.find({}, (err, articles) => {
-        res.json({ articles });
-    })
-});
-
-app.use('/articles', articles);
-app.use('/users', users);
+app.use('/api/articles', articles);
+app.use('/api/users', users);
 
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '/client/build/index.html'));

@@ -42,6 +42,12 @@ const isAuthenticated = (req, res, next) => {
     }
 }
 
+router.get('/', (req, res) => {
+    Article.find({}, (err, articles) => {
+        res.json({ articles });
+    })
+});
+
 router.get('/:id', (req, res) => {
     Article.findById(req.params.id, (err, article) => {
         if (err) throw err;
