@@ -8,7 +8,7 @@ class NavigationBar extends Component {
         const userLinks = (
             <ul className="navbar-nav ml-auto">
                 <li className="nav-item mr-2 mt-2">
-                    <NavLink to="/">Hello, {this.props.authenticatedUsername}</NavLink>
+                    Hello, {this.props.authenticatedUsername}
                 </li>
                 <li className="nav-item">
                     <a className="btn btn-outline-primary" onClick={this.props.userLogoutRequest}>Logout</a>
@@ -28,7 +28,7 @@ class NavigationBar extends Component {
     
         return (
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
-                <NavLink to="/" className="navbar-brand">MERN App</NavLink>
+                <h1 className="navbar-brand">MERN App</h1>
                 <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavBar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
                 </button>

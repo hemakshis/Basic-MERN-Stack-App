@@ -42,6 +42,7 @@ export const userLoginRequest = (userLoginDetails) => {
 export const userLogoutRequest = () => {
     return dispatch => {
         localStorage.removeItem('jwtToken');
+        localStorage.removeItem('BasicMERNStackAppMyArticles');
         dispatch({ type: actionTypes.LOGOUT_USER });
     }
 }

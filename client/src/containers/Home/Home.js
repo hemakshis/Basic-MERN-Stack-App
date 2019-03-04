@@ -10,6 +10,12 @@ class Home extends Component {
         showMyArticles: false
     }
 
+    componentWillMount() {
+        if (this.props.location.pathname === '/article/myarticles' && !this.state.showMyArticles) {
+            this.toggleShowMyArticles();
+        }
+    }
+
     componentDidMount() {
         this.props.initArticles();
         if (this.props.isAuthenticated) {
@@ -17,7 +23,7 @@ class Home extends Component {
         }
     }
 
-    handleMyArticlesClick = () => {
+    toggleShowMyArticles = () => {
         this.setState((prevState) => {
             return {
                 showMyArticles: !prevState.showMyArticles
@@ -36,7 +42,11 @@ class Home extends Component {
 
         let myArticles = [];
         if (this.props.isAuthenticated && this.state.showMyArticles) {
-            myArticles = this.props.myArticles || JSON.parse(localStorage.getItem('BasicMERNStackAppMyArticles'));
+            if (this.props.myArticles) {
+                myArticles = [...this.props.myArticles];
+            } else {
+                myArticles = [...JSON.parse(localStorage.getItem('BasicMERNStackAppMyArticles'))]
+            }
             myArticles = myArticles.map(article => (
                 <Article
                     key={article._id}
@@ -48,7 +58,7 @@ class Home extends Component {
         const showArticlesLink = <WrappedLink
                 to={this.state.showMyArticles ? "/" : "/article/myarticles"}
                 buttonClasses={['btn', 'btn-outline-info', 'mr-3', 'MyArticlesButton']}
-                onClick={this.handleMyArticlesClick}>
+                onClick={this.toggleShowMyArticles}>
                     { this.state.showMyArticles ? 'All Articles' : 'My Articles' }
                 </WrappedLink>
 

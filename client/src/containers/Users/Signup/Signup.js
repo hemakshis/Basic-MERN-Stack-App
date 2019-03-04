@@ -82,9 +82,9 @@ class Signup extends Component {
         let uniquenessError = {};
         if ((field === 'username' || field === 'email') && value !== '') {
             uniquenessError = await this.userUniqueness({ field, value });
-            errors = {...errors, [field]: commonValidationError[field] || uniquenessError[field] };
+            errors = { ...errors, [field]: commonValidationError[field] || uniquenessError[field] };
         } else {
-            errors = {...errors, ...commonValidationError };
+            errors = { ...errors, ...commonValidationError };
         }
 
         this.setState((prevState) => {
