@@ -13,8 +13,8 @@ const validateEmail = (email) => {
     return re.test(email);
 }
 
-const checkUserUniqueness = async (field, value) => {
-    const { error, isUnique } = await User.findOne({[field]: value}).exec()
+const checkUserUniqueness = (field, value) => {
+    return { error, isUnique } = User.findOne({[field]: value}).exec()
         .then(user => {
             let res = {};
             if (Boolean(user)) {
@@ -25,7 +25,6 @@ const checkUserUniqueness = async (field, value) => {
             return res;
         })
         .catch(err => console.log(err))
-    return { error, isUnique };
 }
 
 router.post('/validate', async (req, res) => {
@@ -135,7 +134,6 @@ router.post('/login', (req, res) => {
             }
         });
     }
-
 });
 
 module.exports = router;

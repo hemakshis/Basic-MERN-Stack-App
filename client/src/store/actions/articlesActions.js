@@ -23,6 +23,23 @@ export const getAllArticles = () => {
     };
 };
 
+export const getMyArticles = () => {
+    return dispatch => {
+        fetch('/api/articles/myarticles', {
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('jwtToken'),
+                'Content-Type': 'application/json'
+            },
+            method: 'GET'
+        })
+        .then(res => res.json())
+        .then(res => {
+            localStorage.setItem('BasicMERNStackAppMyArticles', JSON.stringify(res.articles));
+            dispatch({ type: actionTypes.GOT_MY_ARTICLES, myArticles: res.articles })
+        })
+    };
+};
+
 export const getArticle = (articleId) => {
     return dispatch => {
         fetch('/api/articles/' + articleId)

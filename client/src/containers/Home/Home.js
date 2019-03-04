@@ -1,36 +1,70 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getAllArticles } from '../../store/actions/articlesActions';
+import { getAllArticles, getMyArticles } from '../../store/actions/articlesActions';
 import Article from '../../components/Article/Article';
 import WrappedLink from '../../components/WrappedLink/WrappedLink';
 import './Home.css';
 
 class Home extends Component {
+    state = {
+        showMyArticles: false
+    }
+
     componentDidMount() {
         this.props.initArticles();
+        if (this.props.isAuthenticated) {
+            this.props.getMyArticles();
+        }
+    }
+
+    handleMyArticlesClick = () => {
+        this.setState((prevState) => {
+            return {
+                showMyArticles: !prevState.showMyArticles
+            }
+        });
     }
 
     render() {
-        let articles = this.props.articles || JSON.parse(localStorage.getItem('BasicMERNStackAppAllArticles'));
-        articles = this.props.articles.map(article => (
+        let allArticles = this.props.allArticles || JSON.parse(localStorage.getItem('BasicMERNStackAppAllArticles'));
+        allArticles = allArticles.map(article => (
             <Article
                 key={article._id}
                 id={article._id}
                 title={article.title} />
         ));
 
+        let myArticles = [];
+        if (this.props.isAuthenticated && this.state.showMyArticles) {
+            myArticles = this.props.myArticles || JSON.parse(localStorage.getItem('BasicMERNStackAppMyArticles'));
+            myArticles = myArticles.map(article => (
+                <Article
+                    key={article._id}
+                    id={article._id}
+                    title={article.title} />
+            ));
+        }
+
+        const showArticlesLink = <WrappedLink
+                to={this.state.showMyArticles ? "/" : "/article/myarticles"}
+                buttonClasses={['btn', 'btn-outline-info', 'mr-3', 'MyArticlesButton']}
+                onClick={this.handleMyArticlesClick}>
+                    { this.state.showMyArticles ? 'All Articles' : 'My Articles' }
+                </WrappedLink>
+
         return (
             <div className="container">
                 <br />
                 <div className="Header">
                     <h1 style={{display: 'inline-block'}}>All Articles</h1>
-                    <WrappedLink to="/article/add" buttonClasses={['btn', 'btn-primary', 'AddArticleButton']}>Add Article</WrappedLink>
+                    <WrappedLink to="/article/add" buttonClasses={['btn', 'btn-primary', 'mr-3', 'AddArticleButton']}>Add Article</WrappedLink>
+                    {this.props.isAuthenticated && showArticlesLink}
                 </div>
                 <br />
                 <div>
                     <section className="jumbotron">
                         <div className="Articles">
-                            {articles}
+                            { this.state.showMyArticles ? myArticles : allArticles }
                         </div>
                     </section>
                 </div>
@@ -41,14 +75,16 @@ class Home extends Component {
 
 const mapStateToProps = state => {
     return {
-        articles: state.articles.articles,
+        allArticles: state.articles.articles,
+        myArticles: state.articles.myArticles,
         isAuthenticated: state.users.isAuthenticated
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        initArticles: () => dispatch(getAllArticles())
+        initArticles: () => dispatch(getAllArticles()),
+        getMyArticles: () => dispatch(getMyArticles())
     };
 };
 

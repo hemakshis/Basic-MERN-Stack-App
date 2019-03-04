@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const ArticleSchema = mongoose.Schema({
     title: {
@@ -9,8 +10,10 @@ const ArticleSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    authorID: {
-        type: String
+    authorId: {
+        type: ObjectId,
+        required: true,
+        ref: 'User'
     },
     body: {
         type: String,

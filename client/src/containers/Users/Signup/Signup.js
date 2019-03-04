@@ -46,6 +46,9 @@ class Signup extends Component {
                 error[field] = 'Not a valid Email';
             } else if (field === 'password' && value.length < 4) {
                 error[field] = 'Password too short';
+                if (this.state.errors['confirmPassword'] !== '' && value === this.state.userDetails.confirmPassword) {
+                    error['confirmPassword'] = '';
+                }
             } else if (field === 'confirmPassword' && value !== this.state.userDetails.password) {
                 error[field] = 'Passwords do not match';
             } else {

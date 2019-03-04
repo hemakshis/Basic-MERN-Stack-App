@@ -2,7 +2,8 @@ import * as actionTypes from '../actions/actionTypes';
 
 const initialState = {
     articles: [],
-    article: {}
+    article: {},
+    myArticles: {},
 };
 
 const reducer = (state = initialState, action) => {
@@ -12,6 +13,12 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 articles: action.articles
             };
+        case actionTypes.GOT_MY_ARTICLES: {
+            return {
+                ...state,
+                myArticles: action.myArticles
+            }
+        }
         case actionTypes.GOT_SINGLE_ARTICLE:
             return {
                 ...state,

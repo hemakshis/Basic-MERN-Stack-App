@@ -4,7 +4,6 @@ const bodyParser = require('body-parser');
 const path = require('path');
 require('dotenv').config();
 
-const Article = require('./models/articlesModel.js');
 const articles = require('./routes/articlesRoute.js');
 const users = require('./routes/usersRoute.js');
 const config = require('./config.js');

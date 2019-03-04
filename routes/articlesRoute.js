@@ -1,5 +1,6 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
+const ObjectId = require('mongoose').Types.ObjectId;
 
 const Article = require('../models/articlesModel.js');
 const config = require('../config.js');
@@ -34,6 +35,7 @@ const isAuthenticated = (req, res, next) => {
             if (err) {
                 res.status(401).json({ error: 'Failed to authenticate' });
             } else {
+                req.authorId = decoded.id;
                 next();
             }
         });
@@ -48,17 +50,25 @@ router.get('/', (req, res) => {
     })
 });
 
+router.get('/myarticles', isAuthenticated, (req, res) => {
+    Article.find({authorId: req.authorId}, (err, articles) => {
+        if (err) throw err;
+        res.json({ articles });
+    })
+});
+
 router.get('/:id', (req, res) => {
     Article.findById(req.params.id, (err, article) => {
         if (err) throw err;
         res.json({ article });
     })
-})
+});
 
 router.post('/add', isAuthenticated, (req, res) => {
     const title = req.body.title || '';
     const author = req.body.author || '';
     const body = req.body.body || '';
+    const authorId = req.authorId;
 
     const { isValid, errors } = checkForErrors({ title, author, body });
 
@@ -66,7 +76,8 @@ router.post('/add', isAuthenticated, (req, res) => {
         const newArticle = new Article({
             title: title,
             author: author,
-            body: body
+            body: body,
+            authorId: new ObjectId(authorId)
         });
 
         newArticle.save((err) => {
@@ -84,6 +95,7 @@ router.post('/edit/:id', isAuthenticated, (req, res) => {
     const title = req.body.title || '';
     const author = req.body.author || '';
     const body = req.body.body || '';
+    const authorId = req.authorId;
 
     const { isValid, errors } = checkForErrors({ title, author, body });
 
@@ -91,10 +103,11 @@ router.post('/edit/:id', isAuthenticated, (req, res) => {
         const updatedArticle = {
             title: req.body.title,
             author: req.body.author,
-            body: req.body.body
+            body: req.body.body,
+            authorId: new ObjectId(authorId)
         };
 
-        Article.findByIdAndUpdate(req.params.id, updatedArticle, (err, doc) => {
+        Article.findByIdAndUpdate(req.params.id, updatedArticle, err => {
             if (err) throw err;
             else res.json({ success: 'success' });
         });
