@@ -5,8 +5,14 @@ import bodyParser from 'body-parser';
 import Article from './models/articlesModel.js';
 import articles from './routes/articlesRoute.js'
 import users from './routes/usersRoute.js'
+import 'dotenv/config'
 
-mongoose.connect('mongodb://localhost/basic-mern-app');
+let domain = process.env.MONGODB_DOMAIN;
+if (domain == null) {
+    domain = 'localhost'
+}
+
+mongoose.connect(`mongodb://${domain}/basic-mern-app`);
 let db = mongoose.connection;
 
 db.once('open', () => {

@@ -10,13 +10,16 @@
     "author": "Hemakshi Sachdev",
     "license": "ISC",
     "dependencies": {
+        "ansi-regex": "^3.0.0",
         "babel-preset-es2015-node6": "^0.4.0",
         "bcryptjs": "^2.4.3",
         "body-parser": "^1.18.2",
         "concurrently": "^3.5.1",
+        "dotenv": "^16.0.0",
         "express": "^4.16.3",
         "jsonwebtoken": "^8.3.0",
         "mongoose": "^5.0.12",
+        "regjsparser": "^0.1.4",
         "source-map-support": "^0.5.4"
     },
     "devDependencies": {
