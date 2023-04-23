@@ -26,6 +26,12 @@ const app = (
     </Provider>
 );
 
+const chk = document.getElementById('chk');
+
+chk.addEventListener('change', () => {
+	document.body.classList.toggle('dark');
+});
+
 
 ReactDOM.render(app, document.getElementById('root'));
 // registerServiceWorker();
